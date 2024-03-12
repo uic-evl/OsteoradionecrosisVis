@@ -6,23 +6,23 @@ import ResultGraph from './components/ResultGraph';
 import OutcomeTable from './components/OutcomeTable';
 import {Patient,LineGraphResult,LineGraphCollection} from './types';
 
+
 function getResults(v1: number, v2: number, v3: number, times: number[]): LineGraphResult{
-  const lambda: number = 1;
-  const total: number = Math.max(.001,Math.abs(v1 + v2 + v3));
-  const ks: number[] = [.1,.5,.9];
-  const getVal = (t: number,k: number): number => {
-    let p1 = k/lambda;
-    let p2 = (t/lambda)**(k-1);
-    let p3 = Math.exp(-1*(t/lambda)**k);
-    return (p1*p2*p3);
-  }
+  //based on https://courses.washington.edu/b515/l16.pdf proportional hazzard mdoel kinda
+  const coef = [.1,.75,.4];
+  const scale = 5;
+  const intercept = 0;//multiplier to main thing idk
   const values: number[] = times.map(t => {
-    const vv1 = getVal(t,ks[0]);
-    const vv2 = getVal(t,ks[1]);
-    const vv3 = getVal(t,ks[2]);
-    const res: number  = Math.random() + (vv1*v1 + vv2*v2 + vv3*v3)/total;
-    return res;
+    const k: number = 1/scale;
+    let p1 = Math.exp(-1*k*intercept);
+    let p2 = k*(t**(k-1));
+    let bx = -1*k*(coef[0]*v1 + coef[1]*v2 + coef[2]*v3 - intercept);//
+    // let p3 = Math.exp(bx);
+    let p3 = Math.exp(-1*k);
+    let p4 = (Math.log(t) - bx)/.2
+    return (p1*p2*p3)*p4;
   })
+
   const result: LineGraphResult = {times: times, values: values}
   return result
 }
@@ -34,6 +34,12 @@ function App() {
     'D30': [-20,-10,10,20],
     'var2': [-20,-10,10,20],
     'var3': [-20,-10,10,20],
+  }
+
+  function getDisplayName(name: string): string{
+    if(name === 'var2'){ return 'smoking status'}
+    if(name === 'var3'){ return 'dental extraction'}
+    return name;
   }
 
   const results: LineGraphCollection = useMemo(()=>{
@@ -69,7 +75,7 @@ function App() {
   function makeGraph(varName: string){
     return (
       <div key={varName+'graph'} className={'shadow'} style={graphStyle}>
-        <div className={'title'}>{varName}</div>
+        <div className={'title'}>{getDisplayName(varName) + ' vs Survival'}</div>
         <div style={{'width':'100%','height':'calc(100% - 1.5em)'}} className={'rounded'}>
           <ResultGraph 
             inputData={data}
@@ -81,17 +87,17 @@ function App() {
     )
   }
 
-  const controlPanelSize: string = '15em';
+  const controlPanelSize: string = '18em';
   return (
     <ChakraProvider>
     <div className="App" style={{'height':'100%','width':'100%','display':'block'}}>
       <div className={'fillSpace'} style={{'display':'flex'}}>
         <div id={'controlPanel'} 
-          style={{'height':'90vh','width':'15em','display':'inline-block','margin':'.2em','marginTop':'5vh','marginLeft':'2.5vw'}}
+          style={{'height':'90vh','width':'25em','display':'inline-block','margin':'.2em','marginTop':'5vh','marginLeft':'2.5vw'}}
           className={'shadow'}
         >
           <div style={{'height':controlPanelSize,'width':'100%'}}>
-            <ControlPanel data={data} setData={setData} style={{'marginTop':'0em','alignItems':'center','justifyContent':'center','display':'flex'}}></ControlPanel>
+            <ControlPanel data={data} setData={setData} getDisplayName={getDisplayName} style={{'marginTop':'0em','alignItems':'center','justifyContent':'center','display':'flex'}}></ControlPanel>
           </div>
           <div style={{'height':'calc(99% - ' + controlPanelSize + ')','width':'100%'}}>
             <OutcomeTable inputData={data} data={results}/>

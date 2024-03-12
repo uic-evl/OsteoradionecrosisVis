@@ -10,6 +10,7 @@ export default function ControlPanel(props: any){
     const container = useRef(null);
     const [tempData,setTempData] = useState<object>({})
 
+    const smokingStatus = ['never']
     function updateInput(e: any){
         const value: number|string = e.target.value;
         if(Number(value) !== undefined){
@@ -43,7 +44,7 @@ export default function ControlPanel(props: any){
                     <div 
                         className={'toggleButtonLabel'}
                     >
-                        {key}
+                        {props.getDisplayName(key)}
                     </div>
                     <Input 
                     variant='outline' 
