@@ -9,8 +9,8 @@ import {Patient,LineGraphResult,LineGraphCollection} from './types';
 
 function getResults(v1: number, v2: number, v3: number, times: number[]): LineGraphResult{
   //based on https://courses.washington.edu/b515/l16.pdf proportional hazzard mdoel kinda
-  const coef = [.1,.75,.4];
-  const scale = 5;
+  const coef = [.1,2,.4];
+  const scale = 6;
   const intercept = 0;//multiplier to main thing idk
   const values: number[] = times.map(t => {
     const k: number = 1/scale;

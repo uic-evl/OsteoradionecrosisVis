@@ -70,7 +70,7 @@ export default function ResultGraph(props: any){
         let pathFunc = d3.line();
 
         const results: lineplotItem[] = plotResults.map((d,i) => {
-            let pathVals: [number,number][] = d.values.map((vv,ii) => [xScale(times[ii]),yScale(vv)]);
+            let pathVals: [number,number][] = d.values.map((vv,ii) => [xScale(times[ii]),yScale(Math.min(Math.max(0,vv),1))]);
             const isPrimary: boolean = colorDiffs[i] === 0;
             const entry: lineplotItem = {
                 'path': pathFunc(pathVals),
