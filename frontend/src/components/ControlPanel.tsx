@@ -10,8 +10,10 @@ export default function ControlPanel(props: any){
     const container = useRef(null);
     const [tempData,setTempData] = useState<object>({})
 
-    const smokingStatusNames = ['never','always','former'];
-    const smokingStatusValues = [0,1,.5];
+    const smokingStatusNames = ['never','current','former'];
+    const smokingStatusValues = [0,.5,1];
+    const dentalNames = ['No','Yes'];
+    const dentalValues = [0,1];
 
     function updateInput(e: any){
         const value: number|string = e.target.value;
@@ -85,8 +87,9 @@ export default function ControlPanel(props: any){
         return (
         <RadioGroup 
             name={key} 
+            key={'radio'+key}
             style={{'display':'inline-block','marginLeft':'1em','marginTop':'1em'}}
-            value={displayVal+''} key={key} onClick={updateRadio}
+            value={displayVal+''} onClick={updateRadio}
             >
             <div 
                 className={'toggleButtonLabel'}
@@ -120,10 +123,10 @@ export default function ControlPanel(props: any){
                 <div className={'title'}>
                     {"Patient Features"}    
                 </div>
-                {/* {inputButtons} */}
                 {makeInput('D30')}
                 {makeRadio('var2',smokingStatusValues,smokingStatusNames)}
-                {makeInput('var3')}
+                {makeRadio('var3',dentalValues,dentalNames)}
+                <br key='br'></br>
                 <Button key='submit' style={{'marginTop':'2em!important'}} colorScheme='blue' onClick={updateData}>
                     {'Submit'}
                 </Button>

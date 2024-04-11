@@ -19,6 +19,29 @@ interface legendItem {
     color: string,
     width: number,
     height: number,
+    isPrimary: boolean,
+}
+
+const INTERPOLATORS = {
+    'D30': d3.interpolateReds,
+    'var2': d3.interpolateOranges,
+    'var3': d3.interpolateBlues,
+}
+
+function getLegendName(val: number, varName: string): string {
+    if(varName === 'var2'){
+        if(val === 0){return 'Never'}
+        if(val === 1){ return 'Curr.'}
+        if(val === .5){ return 'Former'}
+    }
+    if(varName === 'var3'){
+        if(val === 0){ return 'No'}
+        if(val === 1){ return 'Yes'}
+    }
+    if(varName === 'D30'){
+        return val.toFixed(0) + 'Gy'
+    }
+    return val.toFixed(1)
 }
 export default function ResultGraph(props: any){
 
@@ -31,7 +54,8 @@ export default function ResultGraph(props: any){
     const yLabelSpacing = 40;
     
     useEffect(()=>{
-        if(svg === undefined || props.data === undefined){ return }
+        if(svg === undefined || props.data === undefined || props.inputData === undefined){ return }
+        console.log('here',props.data)
         var plotResults: LineGraphResult[] = [];
         var plotVals: number[] = [];
         var times: number[] = props.data.results[0].times;
@@ -43,20 +67,29 @@ export default function ResultGraph(props: any){
         }
 
         const currVal = props.data.baselineInput[props.varName];
-        const colorDiffs = plotVals.map(d => currVal - d);
-
+        // const refVal = props.inputData[props.varName];
+        // const colorDiffs = plotVals.map(d => currVal - d);
+        const maxRefVal = props.varName === 'D30'? 100: 1;
 
         const cvScale = d3.scaleLinear()
-            .domain([d3.min(colorDiffs),0,d3.max(colorDiffs)])
-            .range([0.1,.5,.9]);
-        const colorInterpolator = d3.interpolateTurbo
-        const colorScale = (d: number) => colorInterpolator(cvScale(d));
+            .domain([0,maxRefVal])
+            .range([.1,.9]);
+
+        const colorInterpolator = INTERPOLATORS[props.varName]? INTERPOLATORS[props.varName]: d3.interpolateBuGn;
+        const colorScale = (d: number) => colorInterpolator(cvScale(d))
+
+        // const cvScale = d3.scaleLinear()
+        //     .domain([d3.min(colorDiffs),0,d3.max(colorDiffs)])
+        //     .range([0.1,.5,.9]);
+
+        // const colorInterpolator = d3.interpolateTurbo
+        // const colorScale = (d: number) => colorInterpolator(cvScale(d));
         
         // d3.scaleSequential(d3.interpolateTurbo)
         //     .domain([d3.min(colorDiffs),0,d3.max(colorDiffs)])
         //     // .range([0xfa8072,0xfff5ee,0xffc0cb]);
         
-        const legendSpacing = Math.min(width/3, 80);
+        const legendSpacing = Math.min(width/3, 150);
         const xStart = margin.x[0] + yLabelSpacing;
         const xEnd = width - margin.x[1] - legendSpacing;
         const xScale = d3.scaleLinear()
@@ -65,16 +98,17 @@ export default function ResultGraph(props: any){
 
         const yScale = d3.scaleLinear()
             .domain([0,1])
-            .range([height-margin.y[1] - subtitleSpacing,margin.y[0] + titleSpacing]);
+            .range([height-margin.y[1] - subtitleSpacing, margin.y[0] + titleSpacing]);
 
         let pathFunc = d3.line();
 
         const results: lineplotItem[] = plotResults.map((d,i) => {
             let pathVals: [number,number][] = d.values.map((vv,ii) => [xScale(times[ii]),yScale(Math.min(Math.max(0,vv),1))]);
-            const isPrimary: boolean = colorDiffs[i] === 0;
+            const isPrimary: boolean = currVal == plotVals[i];
             const entry: lineplotItem = {
                 'path': pathFunc(pathVals),
-                'color': isPrimary? 'black':colorScale(colorDiffs[i]),
+                // 'color': isPrimary? 'black':colorScale(plotVals[i]),
+                'color': colorScale(plotVals[i]),
                 'isPrimary': isPrimary,
             }
             return entry
@@ -85,26 +119,32 @@ export default function ResultGraph(props: any){
             .append('path').attr('class',(d: lineplotItem) => d.isPrimary? 'path pathPrimary': 'path')
             .attr('d', (d: lineplotItem) => d.path)
             .attr('fill','none')
-            .attr('stroke', (d: lineplotItem) => d.color)
+            .attr('stroke', (d: lineplotItem) => d.isPrimary? 'black':d.color)
             .attr('stroke-width', (d: lineplotItem) => d.isPrimary? 8:4);
         
         svg.selectAll('.pathPrimary').raise();
 
-        const legendX: number = width - margin.x[1] - legendSpacing;
+        const legendX: number = width - margin.x[1] - legendSpacing + 15;
         let legendYCurr: number = yScale(1);
-        const lBoxSize: number = Math.min(legendSpacing/2,30, (height - margin.y[1] - margin.y[0] - titleSpacing)/(results.length+1));
+        const lBoxSize: number = Math.min(legendSpacing/2,30, (height - margin.y[1] - margin.y[0] - titleSpacing)/(results.length) - 5);
         const fontSize = Math.min(lBoxSize*.7,18);
-        let legendData: legendItem[] = [{
-            'x': legendX,
-            'y': legendYCurr,
-            'textX': legendX + legendSpacing/4,
-            'textY': legendYCurr,
-            'color': 'none',
-            'text': props.varName,
-            'width':0,
-            'height': 0
-        }];
-        legendYCurr += .6*fontSize;
+
+        // let legendData: legendItem[] = [{
+        //     'x': legendX,
+        //     'y': legendYCurr,
+        //     'textX': legendX + legendSpacing/4,
+        //     'textY': legendYCurr,
+        //     'color': 'none',
+        //     'text': '',
+        //     'width':0,
+        //     'height': 0,
+        //     'isPrimary': false,
+        // }];
+        // legendYCurr += .6*fontSize;
+
+        let legendData: legendItem[] = [];
+
+        const fixSize: number = props.varName === 'var2'? 1:0;
         for(let ii in plotVals){
             let value = plotVals[ii];
             let color = results[ii].color;
@@ -114,7 +154,8 @@ export default function ResultGraph(props: any){
                 'textX': lBoxSize + 5 + legendX,
                 'textY': legendYCurr + (lBoxSize/2),
                 'color': color,
-                'text': value.toFixed(0),
+                'isPrimary': results[ii].isPrimary,
+                'text': getLegendName(value,props.varName),
                 'width': lBoxSize,
                 'height': lBoxSize,
             }
@@ -131,7 +172,8 @@ export default function ResultGraph(props: any){
             .attr('width', (d: legendItem) => d.width)
             .attr('height', (d: legendItem) => d.height)
             .attr('fill', (d: legendItem) => d.color)
-            .attr('stroke','black').attr('stroke-width',2);
+            .attr('stroke', (d:legendItem) => d.isPrimary? 'black':'white')
+            .attr('stroke-width',2);
 
         let lText = svg.selectAll('text').filter('.legend').data(legendData);
         lText.enter()
@@ -139,9 +181,11 @@ export default function ResultGraph(props: any){
             .attr('x', (d: legendItem) => d.textX)
             .attr('y', (d: legendItem) => d.textY)
             .attr('dominant-baseline','middle')
-            .attr('font-size',(d: legendItem,i: number) => i === 0?  1.1*fontSize:fontSize)
-            .attr('font-weight',(d: legendItem,i: number) => i === 0? 'bold':'')
-            .attr('text-anchor',(d: legendItem,i: number) => i === 0? 'middle':'start')
+            // .attr('font-size',(d: legendItem,i: number) => i === 0?  1.1*fontSize:fontSize)
+            // .attr('font-weight',(d: legendItem,i: number) => i === 0? 'bold':'')
+            // .attr('text-anchor',(d: legendItem,i: number) => i === 0? 'middle':'start')
+            .attr('font-size', fontSize)
+            .attr('text-anchor', 'start')
             .text((d: legendItem) => d.text);
 
     

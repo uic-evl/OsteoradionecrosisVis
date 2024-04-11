@@ -9,18 +9,22 @@ import {Patient,LineGraphResult,LineGraphCollection} from './types';
 
 function getResults(v1: number, v2: number, v3: number, times: number[]): LineGraphResult{
   //based on https://courses.washington.edu/b515/l16.pdf proportional hazzard mdoel kinda
-  const coef = [.1,2,.4];
-  const scale = 6;
-  const intercept = 0;//multiplier to main thing idk
+  const coef: number[] = [.1,2,.4];
+  const scale: number = 6;//lambda
+  const intercept: number = 0;
+  const shape: number = .9
   const values: number[] = times.map(t => {
-    const k: number = 1/scale;
-    let p1 = Math.exp(-1*k*intercept);
-    let p2 = k*(t**(k-1));
-    let bx = -1*k*(coef[0]*v1 + coef[1]*v2 + coef[2]*v3 - intercept);//
-    // let p3 = Math.exp(bx);
-    let p3 = Math.exp(-1*k);
-    let p4 = (Math.log(t) - bx)/.2
-    return (p1*p2*p3)*p4;
+    const denom: number = Math.exp(coef[0]*v1 + coef[1]*v2 + coef[2]*v3 + intercept);
+    const s = Math.exp(-1*(t/denom)**shape);
+    return s
+    // const k: number = 1/scale;
+    // let p1 = Math.exp(-1*k*intercept);
+    // let p2 = k*(t**(k-1));
+    // let bx = -1*k*(coef[0]*v1 + coef[1]*v2 + coef[2]*v3 - intercept);//
+    // // let p3 = Math.exp(bx);
+    // let p3 = Math.exp(-1*k);
+    // let p4 = (Math.log(t) - bx)/.2
+    // return (p1*p2*p3)*p4;
   })
 
   const result: LineGraphResult = {times: times, values: values}
@@ -31,14 +35,15 @@ function App() {
   const [data,setData] = useState<Patient>({'D30': 0, 'var2': 0, 'var3': 0});
   const timesToPlot = [12,24,36,48,60];
   const plotVariations: object = {
-    'D30': [-20,-10,10,20],
-    'var2': [-20,-10,10,20],
-    'var3': [-20,-10,10,20],
+    'D30': [10.0,20,30,40,50,60,70,80,90,99],
+    'var2': [0.0,.5,1.0],
+    'var3': [0.0,1.0],
   }
 
   function getDisplayName(name: string): string{
     if(name === 'var2'){ return 'smoking status'}
     if(name === 'var3'){ return 'dental extraction'}
+    if(name === 'D30'){ return 'D30 (Mandible)'}
     return name;
   }
 
@@ -55,10 +60,10 @@ function App() {
       const variants: number[] | undefined = plotVariations[key];
       if(variants === undefined){ continue; }
       for(let vv of variants){
+        if(values[i] == vv){ continue; }
         let tempVals = [...values];
-        tempVals[i] = tempVals[i] + vv;
+        tempVals[i] = vv;
         const result: LineGraphResult = getResults(tempVals[0],tempVals[1],tempVals[2],timesToPlot);
-        // console.log('vv',vv,key,result.values)
         results.push(result);
         changedVars.push(key);
         inputs.push({'D30': tempVals[0],'var2': tempVals[1], 'var3': tempVals[2]})
@@ -104,7 +109,7 @@ function App() {
           </div>
         </div>
         <div 
-          style={{'height':'90vh','width':'calc(95vw - 15em)','display':'inline-block','margin':'.2em','marginTop':'5vh'}}
+          style={{'height':'90vh','width':'calc(85vw - 15em)','display':'inline-block','margin':'.2em','marginTop':'5vh'}}
           className={'shadow'}
         >
             {makeGraph('D30')}
