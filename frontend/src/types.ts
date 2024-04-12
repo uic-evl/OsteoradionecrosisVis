@@ -12,6 +12,8 @@ export interface Sequence {
 export interface LineGraphResult{
   times: number[],
   values: number[],
+  valuesLower: number[],
+  valuesUpper: number[],
 }
 
 export interface LineGraphCollection{

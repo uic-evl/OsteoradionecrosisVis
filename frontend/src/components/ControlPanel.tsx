@@ -10,8 +10,8 @@ export default function ControlPanel(props: any){
     const container = useRef(null);
     const [tempData,setTempData] = useState<object>({})
 
-    const smokingStatusNames = ['never','current','former'];
-    const smokingStatusValues = [0,.5,1];
+    const smokingStatusNames = ['No/Former','Current'];
+    const smokingStatusValues = [0,1];
     const dentalNames = ['No','Yes'];
     const dentalValues = [0,1];
 
@@ -125,6 +125,7 @@ export default function ControlPanel(props: any){
                 </div>
                 {makeInput('D30')}
                 {makeRadio('var2',smokingStatusValues,smokingStatusNames)}
+                <br key='br0'></br>
                 {makeRadio('var3',dentalValues,dentalNames)}
                 <br key='br'></br>
                 <Button key='submit' style={{'marginTop':'2em!important'}} colorScheme='blue' onClick={updateData}>
