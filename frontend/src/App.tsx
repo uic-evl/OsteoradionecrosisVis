@@ -27,16 +27,15 @@ function getResults(v1: number, v2: number, v3: number, times: number[]): LineGr
     return vals
   }
   const values: number[] = calcS(coef,intercept,shape);
-  const valuesLower: number[] = calcS(coefLower,interceptLower,shapeLower);
-  const valuesUpper: number[] = calcS(coefUpper, interceptUpper, shapeUpper);
+  const valuesLower: number[] = calcS(coefLower,interceptUpper,shape);
+  const valuesUpper: number[] = calcS(coefUpper, interceptLower, shape);
   const result: LineGraphResult = {times: times, values: values, valuesUpper: valuesUpper, valuesLower: valuesLower}
-  console.log('results',result)
   return result
 }
 function App() {
 
   const [data,setData] = useState<Patient>({'D30': 0, 'var2': 0, 'var3': 0});
-  const timesToPlot = [12,24,36,48,60];
+  const timesToPlot = [0,12,24,36,48,60];
   const plotVariations: object = {
     'D30': [10.0,20,30,40,50,60,70,80,90,99],
     'var2': [0.0,1.0],
@@ -73,7 +72,7 @@ function App() {
       }
     }
     const resultCollection: LineGraphCollection = {results: results,inputs:inputs,changedVars: changedVars, baselineInput: Object.assign({},data)}
-    // console.log('results',resultCollection.results);
+
     return resultCollection
 
   },[data]);
@@ -104,12 +103,12 @@ function App() {
           style={{'height':'90vh','width':'25em','display':'inline-block','margin':'.2em','marginTop':'5vh','marginLeft':'2.5vw'}}
           className={'shadow'}
         >
-          <div style={{'height':controlPanelSize,'width':'100%'}}>
+          <div style={{'height':'100%','width':'100%'}}>
             <ControlPanel data={data} setData={setData} getDisplayName={getDisplayName} style={{'marginTop':'0em','alignItems':'center','justifyContent':'center','display':'flex'}}></ControlPanel>
           </div>
-          <div style={{'height':'calc(99% - ' + controlPanelSize + ')','width':'100%'}}>
+          {/* <div style={{'height':'calc(99% - ' + controlPanelSize + ')','width':'100%'}}>
             <OutcomeTable inputData={data} data={results}/>
-          </div>
+          </div> */}
         </div>
         <div 
           style={{'height':'90vh','width':'calc(65vw - 15em)','display':'inline-block','margin':'.2em','marginTop':'5vh'}}
@@ -118,6 +117,14 @@ function App() {
             {makeGraph('D30')}
             {makeGraph('var2')}
             {makeGraph('var3')}
+        </div>
+        <div id={'controlPanel'} 
+          style={{'height':'90vh','width':'25em','display':'inline-block','margin':'.2em','marginTop':'5vh','marginLeft':'2.5vw'}}
+          className={'shadow'}
+        >
+          <div style={{'height':'100%','width':'100%'}}>
+            <OutcomeTable inputData={data} data={results}/>
+          </div>
         </div>
       </div>
     </div>

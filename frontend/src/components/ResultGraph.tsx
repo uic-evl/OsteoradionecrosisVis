@@ -9,6 +9,7 @@ interface lineplotItem {
     path: string,
     color: string,
     isPrimary: boolean,
+    isConf: boolean,
 }
 interface legendItem {
     x: number,
@@ -55,7 +56,6 @@ export default function ResultGraph(props: any){
     
     useEffect(()=>{
         if(svg === undefined || props.data === undefined || props.inputData === undefined){ return }
-        console.log('here',props.data)
         var plotResults: LineGraphResult[] = [];
         var plotVals: number[] = [];
         var times: number[] = props.data.results[0].times;
@@ -97,21 +97,70 @@ export default function ResultGraph(props: any){
             const isPrimary: boolean = currVal == plotVals[i];
             const entry: lineplotItem = {
                 'path': pathFunc(pathVals),
-                // 'color': isPrimary? 'black':colorScale(plotVals[i]),
-                'color': colorScale(plotVals[i]),
+                'color': isPrimary? 'black':colorScale(plotVals[i]),
+                // 'color': colorScale(plotVals[i]),
                 'isPrimary': isPrimary,
+                'isConf': false,
             }
             return entry
-        })
+        });
+
+        const confBounds: lineplotItem[] = [];
+        const confFill: lineplotItem[] = []
+        for(const i in props.data.changedVars){
+            if(props.data.changedVars[i] === 'none'){
+                const upperVals = props.data.results[i].valuesUpper;
+                const lowerVals = props.data.results[i].valuesLower;
+                console.log('uv',upperVals)
+                const times = props.data.results[i].times
+                const upperPath: [number,number][] = upperVals.map((vv,ii) => [xScale(times[ii]),yScale(Math.min(Math.max(0,vv),1))]);
+                const lowerPath: [number,number][] = lowerVals.map((vv,ii) => [xScale(times[ii]),yScale(Math.min(Math.max(0,vv),1))]);
+
+                const upperEntry: lineplotItem = {
+                    'path': pathFunc(upperPath),
+                    'color': 'grey',
+                    'isPrimary': false,
+                    'isConf': true,
+                }
+                const lowerEntry: lineplotItem = {
+                    'path': pathFunc(lowerPath),
+                    'color': 'grey',
+                    'isPrimary': false,
+                    'isConf': true,
+                }
+
+                confBounds.push(upperEntry);
+                confBounds.push(lowerEntry);
+
+                var mergedPath: [number,number][] = upperPath.concat([...lowerPath].reverse());
+                confFill.push({
+                    'path': pathFunc(mergedPath),
+                    'color': 'gray',
+                    'isPrimary': false,
+                    'isConf': true,
+                })
+            }
+        }
+
         svg.selectAll('.path').remove();
-        var lines = svg.selectAll('path').filter('.path').data(results);
+        var lines = svg.selectAll('path').filter('.path').data(results.concat(confBounds));
         lines.enter()
             .append('path').attr('class',(d: lineplotItem) => d.isPrimary? 'path pathPrimary': 'path')
             .attr('d', (d: lineplotItem) => d.path)
             .attr('fill','none')
-            .attr('stroke', (d: lineplotItem) => d.isPrimary? 'black':d.color)
+            .attr('stroke', (d: lineplotItem) => d.color)
+            .attr('stroke-opacity', (d: lineplotItem) => d.isConf? .8:1)
             .attr('stroke-dasharray', (d: lineplotItem) => d.isPrimary? '': '10 2')
-            .attr('stroke-width', (d: lineplotItem) => d.isPrimary? 4:4);
+            .attr('stroke-width', (d: lineplotItem) => d.isPrimary? 4: d.isConf? 2:4);
+
+        svg.selectAll('.pathFill').remove();
+        var confplot = svg.selectAll('path').filter('.pathFill').data(confFill);
+        confplot.enter()
+            .append('path').attr('class','pathFill')
+            .attr('d', (d: lineplotItem) => d.path)
+            .attr('fill','grey')
+            .attr('opacity',.3)
+            .attr('stroke', 'none');
         
         svg.selectAll('.pathPrimary').raise();
 
