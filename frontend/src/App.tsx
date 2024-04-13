@@ -30,8 +30,8 @@ function getResults(v1: number, v2: number, v3: number, times: number[]): LineGr
     return [vals, meanEvent,medianEvent]
   }
   const [values,meanTime,medianTime]: [number[],number,number] = calcS(coef,intercept,shape);
-  const [valuesLower,meanTimeLower,medianTimeLower]: [number[],number,number] = calcS(coefLower,interceptUpper,shape);
-  const [valuesUpper,meanTimeUpper,medianTimeUpper]: [number[],number,number] = calcS(coefUpper, interceptLower, shape);
+  const [valuesLower,meanTimeLower,medianTimeLower]: [number[],number,number] = calcS(coefLower,intercept,shapeLower);
+  const [valuesUpper,meanTimeUpper,medianTimeUpper]: [number[],number,number] = calcS(coefUpper, intercept, shapeUpper);
   const result: LineGraphResult = {
     times: times, 
     values: values, valuesUpper: valuesUpper, valuesLower: valuesLower, 

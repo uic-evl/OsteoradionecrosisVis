@@ -103,14 +103,15 @@ export default function ControlPanel(props: any){
         )
     }   
 
-    const [survivalTime,medianSurvivalTime]: [number,number] = useMemo(()=>{
-        if(props.results === undefined){return [0,0]}
+    const [survivalTimes,medianSurvivalTimes]: [number[],number[]] = useMemo(()=>{
+        if(props.results === undefined){return [[0,0,0],[0,0,0]]}
         const res = props.results.results.filter((d,i) => props.results.changedVars[i] == 'none')[0]
-        return [res.meanTime, res.medianTime];
+        return [[res.meanTime,res.meanTimeLower,res.meanTimeUpper], [res.medianTime,res.medianTimeLower,res.medianTimeUpper]];
     },[props.results])
 
     const defaultStyle = {'height':'95%','width':'95%'};
     const style = Object.assign(defaultStyle,props.style || {});
+    const getCI = (v: number[]) => v[0].toFixed(0) + ' (' + v[1].toFixed(0) + '-' + v[2].toFixed(0) + ') Months';
     return (
         <div
             style={style}
@@ -130,8 +131,8 @@ export default function ControlPanel(props: any){
                 </Button>
                 <br></br>
                 <hr style={{'marginBottom':'1em','marginTop':'1em'}}></hr>
-                <div>{'Mean Survival: ' + survivalTime.toFixed(1) + ' Months' }</div>
-                <div>{'Median Survival: ' + medianSurvivalTime.toFixed(1) + ' Months' }</div>
+                <div>{'Mean Survival: ' + getCI(survivalTimes) }</div>
+                <div>{'Median Survival: ' + getCI(medianSurvivalTimes) }</div>
             </div>
             
         </div>

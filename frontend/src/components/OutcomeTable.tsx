@@ -58,7 +58,7 @@ export default function OutcomeTable(props: any){
             return margin.x[0] + d.col*blockWidth;
         }
 
-        svg.selectAll('.blocks').remove();
+        
         const blocks = svg.selectAll('.blocks').data(tableData);
         blocks.enter()
             .append('rect').attr('class','blocks')
@@ -66,10 +66,13 @@ export default function OutcomeTable(props: any){
             .attr('y', getY)
             .attr('width',blockWidth)
             .attr('height',blockHeight)
+            .merge(blocks)
+            .transition(3000)
             .attr('fill',(d: TableBlock) => d.color)
             .attr('fill-opacity',.5)
             .attr('stroke','black').attr('stroke-width',3);
 
+        blocks.exit().remove();
         svg.selectAll('.blockText').remove();
         const blockText= svg.selectAll('.blockText').data(tableData);
         blockText.enter()
