@@ -103,14 +103,11 @@ export default function ControlPanel(props: any){
         )
     }   
 
-    // const inputButtons = useMemo(()=>{
-    //     return (
-    //         <>
-    //             {makeInput('D30')}
-    //             {makeInput('var3')}
-    //         </>
-    //     )
-    // },[props.data]);
+    const [survivalTime,medianSurvivalTime]: [number,number] = useMemo(()=>{
+        if(props.results === undefined){return [0,0]}
+        const res = props.results.results.filter((d,i) => props.results.changedVars[i] == 'none')[0]
+        return [res.meanTime, res.medianTime];
+    },[props.results])
 
     const defaultStyle = {'height':'95%','width':'95%'};
     const style = Object.assign(defaultStyle,props.style || {});
@@ -131,6 +128,10 @@ export default function ControlPanel(props: any){
                 <Button key='submit' style={{'marginTop':'2em!important'}} colorScheme='blue' onClick={updateData}>
                     {'Submit'}
                 </Button>
+                <br></br>
+                <hr style={{'marginBottom':'1em','marginTop':'1em'}}></hr>
+                <div>{'Mean Survival: ' + survivalTime.toFixed(1) + ' Months' }</div>
+                <div>{'Median Survival: ' + medianSurvivalTime.toFixed(1) + ' Months' }</div>
             </div>
             
         </div>

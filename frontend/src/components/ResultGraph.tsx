@@ -79,7 +79,7 @@ export default function ResultGraph(props: any){
         const colorScale = (d: number) => colorInterpolator(cvScale(d))
 
 
-        const legendSpacing = Math.min(width/3, 150);
+        const legendSpacing = Math.min(width/3, 120);
         const xStart = margin.x[0] + yLabelSpacing;
         const xEnd = width - margin.x[1] - legendSpacing;
         const xScale = d3.scaleLinear()
@@ -111,7 +111,7 @@ export default function ResultGraph(props: any){
             if(props.data.changedVars[i] === 'none'){
                 const upperVals = props.data.results[i].valuesUpper;
                 const lowerVals = props.data.results[i].valuesLower;
-                console.log('uv',upperVals)
+
                 const times = props.data.results[i].times
                 const upperPath: [number,number][] = upperVals.map((vv,ii) => [xScale(times[ii]),yScale(Math.min(Math.max(0,vv),1))]);
                 const lowerPath: [number,number][] = lowerVals.map((vv,ii) => [xScale(times[ii]),yScale(Math.min(Math.max(0,vv),1))]);
@@ -195,7 +195,7 @@ export default function ResultGraph(props: any){
                 'textY': legendYCurr + (lBoxSize/2),
                 'color': (parseFloat(ii) === 0)? 'black': color,
                 'isPrimary': results[ii].isPrimary,
-                'text': (parseFloat(ii) === 0)? 'Current (' + getLegendName(value,props.varName) + ')' : getLegendName(value,props.varName),
+                'text': (parseFloat(ii) === 0)? 'Curr. (' + getLegendName(value,props.varName) + ')' : getLegendName(value,props.varName),
                 'width': lBoxSize,
                 'height': lBoxSize,
             }
@@ -224,7 +224,7 @@ export default function ResultGraph(props: any){
             // .attr('font-size',(d: legendItem,i: number) => i === 0?  1.1*fontSize:fontSize)
             // .attr('font-weight',(d: legendItem,i: number) => i === 0? 'bold':'')
             // .attr('text-anchor',(d: legendItem,i: number) => i === 0? 'middle':'start')
-            .attr('font-size', fontSize)
+            .attr('font-size', Math.min(16,fontSize))
             .attr('text-anchor', 'start')
             .text((d: legendItem) => d.text);
 

@@ -5,6 +5,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import ResultGraph from './components/ResultGraph';
 import OutcomeTable from './components/OutcomeTable';
 import {Patient,LineGraphResult,LineGraphCollection} from './types';
+import {gamma} from 'mathjs'
 
 
 function getResults(v1: number, v2: number, v3: number, times: number[]): LineGraphResult{
@@ -18,24 +19,31 @@ function getResults(v1: number, v2: number, v3: number, times: number[]): LineGr
   const shape: number = Math.exp(-0.274481);
   const shapeLower: number = Math.exp(-0.406940);
   const shapeUpper: number = Math.exp(-0.142022);
-  function calcS(coefficients: number[], inter: number, shp: number): number[] {
+  function calcS(coefficients: number[], inter: number, shp: number): [number[],number,number] {
+    const denom: number = Math.exp(coefficients[0]*v1 + coefficients[1]*v2 + coefficients[2]*v3 + inter);
     const vals: number[] = times.map(t => {
-      const denom: number = Math.exp(coefficients[0]*v1 + coefficients[1]*v2 + coefficients[2]*v3 + inter);
       const s = Math.exp(-1*(t/denom)**shp);
       return s
     })
-    return vals
+    const meanEvent = denom*gamma(1 + (1/shp));
+    const medianEvent = denom*Math.log(2)**(1/shp)
+    return [vals, meanEvent,medianEvent]
   }
-  const values: number[] = calcS(coef,intercept,shape);
-  const valuesLower: number[] = calcS(coefLower,interceptUpper,shape);
-  const valuesUpper: number[] = calcS(coefUpper, interceptLower, shape);
-  const result: LineGraphResult = {times: times, values: values, valuesUpper: valuesUpper, valuesLower: valuesLower}
+  const [values,meanTime,medianTime]: [number[],number,number] = calcS(coef,intercept,shape);
+  const [valuesLower,meanTimeLower,medianTimeLower]: [number[],number,number] = calcS(coefLower,interceptUpper,shape);
+  const [valuesUpper,meanTimeUpper,medianTimeUpper]: [number[],number,number] = calcS(coefUpper, interceptLower, shape);
+  const result: LineGraphResult = {
+    times: times, 
+    values: values, valuesUpper: valuesUpper, valuesLower: valuesLower, 
+    meanTime: meanTime, meanTimeUpper: meanTimeUpper, meanTimeLower: meanTimeLower,
+    medianTime: medianTime, medianTimeUpper: medianTimeUpper, medianTimeLower: medianTimeLower,
+  }
   return result
 }
 function App() {
 
   const [data,setData] = useState<Patient>({'D30': 0, 'var2': 0, 'var3': 0});
-  const timesToPlot = [0,12,24,36,48,60];
+  const timesToPlot = [0,6,12,18,24,30,36,42,48,54,60];
   const plotVariations: object = {
     'D30': [10.0,20,30,40,50,60,70,80,90,99],
     'var2': [0.0,1.0],
@@ -100,18 +108,18 @@ function App() {
     <div className="App" style={{'height':'100%','width':'100%','display':'block'}}>
       <div className={'fillSpace'} style={{'display':'flex'}}>
         <div id={'controlPanel'} 
-          style={{'height':'90vh','width':'25em','display':'inline-block','margin':'.2em','marginTop':'5vh','marginLeft':'2.5vw'}}
+          style={{'height':'95vh','width':'25em','display':'inline-block','margin':'.2em','marginTop':'2.5vh','marginLeft':'2.5vw'}}
           className={'shadow'}
         >
           <div style={{'height':'100%','width':'100%'}}>
-            <ControlPanel data={data} setData={setData} getDisplayName={getDisplayName} style={{'marginTop':'0em','alignItems':'center','justifyContent':'center','display':'flex'}}></ControlPanel>
+            <ControlPanel data={data} setData={setData} results={results} getDisplayName={getDisplayName} style={{'marginTop':'0em','alignItems':'center','justifyContent':'center','display':'flex'}}></ControlPanel>
           </div>
           {/* <div style={{'height':'calc(99% - ' + controlPanelSize + ')','width':'100%'}}>
             <OutcomeTable inputData={data} data={results}/>
           </div> */}
         </div>
         <div 
-          style={{'height':'90vh','width':'calc(65vw - 15em)','display':'inline-block','margin':'.2em','marginTop':'5vh'}}
+          style={{'height':'95vh','width':'calc(95vw - 50em - 2em)','maxWidth':'80vh','display':'inline-block','margin':'.2em','marginTop':'2.5vh','marginLeft': '1em'}}
           className={'shadow'}
         >
             {makeGraph('D30')}
@@ -119,7 +127,7 @@ function App() {
             {makeGraph('var3')}
         </div>
         <div id={'controlPanel'} 
-          style={{'height':'90vh','width':'25em','display':'inline-block','margin':'.2em','marginTop':'5vh','marginLeft':'2.5vw'}}
+          style={{'height':'95vh','width':'25em','display':'inline-block','margin':'.2em','marginTop':'2.5vh','marginLeft':'1em'}}
           className={'shadow'}
         >
           <div style={{'height':'100%','width':'100%'}}>

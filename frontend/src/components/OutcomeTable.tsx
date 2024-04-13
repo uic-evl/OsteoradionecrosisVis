@@ -26,13 +26,13 @@ export default function OutcomeTable(props: any){
         const values: number[] = props.data.results[0].values;
         var tableData: TableBlock[] = [
             {row: 0, col: 0, text: 'Time','color':'none'},
-            {row: 0, col: 1, text: 'Outcome','color': 'none'}
+            {row: 0, col: 1, text: 'ORN Risk','color': 'none'}
         ];
 
         let currRow: number = 1;
         for(let i in times){
             const t: number = times[i];
-            const v: number = values[i];
+            const v: number = (1 - values[i]);//show risk istead of survival
             tableData.push({
                 row: currRow,
                 col: 0,

@@ -14,6 +14,12 @@ export interface LineGraphResult{
   values: number[],
   valuesLower: number[],
   valuesUpper: number[],
+  meanTime: number,
+  meanTimeLower: number | null,
+  meanTimeUpper: number | null,
+  medianTime: number,
+  medianTimeLower: number | null,
+  medianTimeUpper: number | null,
 }
 
 export interface LineGraphCollection{
