@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/OsteoradionecrosisVis/static/css/main.7a815968.css",
-    "main.js": "/OsteoradionecrosisVis/static/js/main.9e6a87f6.js",
+    "main.js": "/OsteoradionecrosisVis/static/js/main.ba323305.js",
     "static/js/592.bf6ca574.chunk.js": "/OsteoradionecrosisVis/static/js/592.bf6ca574.chunk.js",
     "static/media/model.png": "/OsteoradionecrosisVis/static/media/model.f816c6fd5dc30206d8b1.png",
     "index.html": "/OsteoradionecrosisVis/index.html",
     "main.7a815968.css.map": "/OsteoradionecrosisVis/static/css/main.7a815968.css.map",
-    "main.9e6a87f6.js.map": "/OsteoradionecrosisVis/static/js/main.9e6a87f6.js.map",
+    "main.ba323305.js.map": "/OsteoradionecrosisVis/static/js/main.ba323305.js.map",
     "592.bf6ca574.chunk.js.map": "/OsteoradionecrosisVis/static/js/592.bf6ca574.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7a815968.css",
-    "static/js/main.9e6a87f6.js"
+    "static/js/main.ba323305.js"
   ]
 }
