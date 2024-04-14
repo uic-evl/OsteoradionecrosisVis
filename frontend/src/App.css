@@ -201,6 +201,12 @@ hr:after {
   font-family: Georgia!important;
 } 
 
+.chakra-stack{
+  height: 1.5em!important;
+  margin: .1em!important;
+  padding: .1em!important;
+}
+
 /* Works on Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
   width: 6px;

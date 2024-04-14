@@ -90,22 +90,25 @@ export default function ControlPanel(props: any){
             return (<Radio value={d+''} key={key+i+'radiooption'}>{rName}</Radio>)
         });
         return (
+        <div style={{'justifyContent':'center','textAlign':'center','alignItems':'center','marginTop':'.8em'}}>
+        <div 
+            className={'toggleButtonLabel'}
+            style={{'justifyContent':'center','textAlign':'center','alignItems':'center','width':'100%','marginBottom':'0px'}}
+            key={'radio2'+key}
+        >
+            {props.getDisplayName(key)}
+        </div>
         <RadioGroup 
             name={key} 
             key={'radio'+key}
-            style={{'display':'inline-block','marginLeft':'1em','marginTop':'1em'}}
+            style={{'display':'inline-flex','height':'2em','maxHeight':'2em!important','width':'100%','justifyContent':'center'}}
             value={displayVal+''} onClick={updateRadio}
             >
-            <div 
-                className={'toggleButtonLabel'}
-                key={'radio2'+key}
-            >
-                {props.getDisplayName(key)}
-            </div>
             <Stack direction={'row'}>
                 {rOptions}
             </Stack>
         </RadioGroup>
+        </div>
         )
     }   
 
@@ -162,9 +165,7 @@ export default function ControlPanel(props: any){
                 </div>
                 {makeInput('D30')}
                 {makeRadio('var2',smokingStatusValues,smokingStatusNames)}
-                <br key='br0'></br>
                 {makeRadio('var3',dentalValues,dentalNames)}
-                <br key='br'></br>
                 <Button key='submit' style={{'marginTop':'2em!important'}} colorScheme='blue' onClick={updateData}>
                     {'Submit'}
                 </Button>
