@@ -25,9 +25,9 @@ interface legendItem {
 }
 
 const INTERPOLATORS = {
-    'D30': d3.interpolateLab("steelblue", "red"),
-    'var2': d3.interpolateLab("steelblue", "red"),
-    'var3': d3.interpolateLab("steelblue", "red"),
+    'D30': d3.interpolateRgbBasis(["#313695",'#ffffbf', "#a50026"]),
+    'var2': d3.interpolateLab("#313695", "#a50026"),
+    'var3': d3.interpolateLab("#313695", "#a50026"),
 }
 
 function getLegendName(val: number, varName: string): string {
@@ -68,15 +68,13 @@ export default function ResultGraph(props: any){
         }
 
         const currVal = props.data.baselineInput[props.varName];
-        // const refVal = props.inputData[props.varName];
-        // const colorDiffs = plotVals.map(d => currVal - d);
         const maxRefVal = props.varName === 'D30'? 100: 1;
-
+        const minRefVal = props.varName === 'D30'? 10: 0;
         const cvScale = d3.scaleLinear()
-            .domain([0,maxRefVal])
-            .range([.1,.9]);
+            .domain([minRefVal,maxRefVal])
+            .range([0,1]);
 
-        const colorInterpolator = INTERPOLATORS[props.varName]? INTERPOLATORS[props.varName]: d3.interpolateBuGn;
+        const colorInterpolator = INTERPOLATORS[props.varName]? INTERPOLATORS[props.varName]:  d3.interpolateRgbBasis(["#313695",'#ffffbf',"#a50026"]);
         const colorScale = (d: number) => colorInterpolator(cvScale(d))
 
 
