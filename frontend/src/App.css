@@ -196,10 +196,16 @@ hr:after {
 }
 
 .title, .title > *{
-  font-size: 1em;
+  font-size: 1.1em;
   font-weight: bold!important;
   font-family: Georgia!important;
 } 
+
+.suptitle{
+  font-size: .9em;
+  font-weight: bold!important;
+  font-family: Georgia!important;
+}
 
 .chakra-stack{
   height: 1.5em!important;

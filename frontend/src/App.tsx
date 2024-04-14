@@ -95,12 +95,12 @@ function App() {
 
   },[data]);
 
-  const graphStyle: any = {'width':'100%','height':'calc(31.5% - .5em)','marginTop':'1%'}
+  const graphStyle: any = {'width':'100%','height':'32%','marginTop':'1%'}
 
   function makeGraph(varName: string){
     return (
       <div key={varName+'graph'} className={'shadow'} style={graphStyle}>
-        <div className={'title'}>{getDisplayName(varName) + ' vs ORN-Free survival'}</div>
+        <div className={'suptitle'}>{getDisplayName(varName) + ' vs ORN-Free survival'}</div>
         <div style={{'width':'100%','height':'calc(100% - 1.5em)'}} className={'rounded'}>
           <ResultGraph 
             inputData={data}
@@ -173,12 +173,13 @@ function App() {
           style={{'height':'95vh','width':'calc(95vw - 50em - 2em)','maxWidth':'80vh','display':'inline-block','margin':'.2em','marginTop':'2.5vh','marginLeft': '1em'}}
           className={'shadow'}
         >
-            
+            <div className={'title'} style={{'height':'1.1em','marginBottom':'1em'}}>Partial Effects on Survival</div>
+            <div style={{'width':'100%','height':'calc(100% - 4.5em)'}}>
             {makeGraph('D30')}
             {makeGraph('var2')}
             {makeGraph('var3')}
-        
-            <div style={{'width':'100%','margin':'0px','marginTop':'1em'}}>
+            </div>
+            <div style={{'width':'100%','margin':'0px','marginTop':'0em','height':'1em'}}>
               {makeGraphToggle()}
               <div className={'toggleButtonLabel'}>Uncertainty</div>
             </div>
