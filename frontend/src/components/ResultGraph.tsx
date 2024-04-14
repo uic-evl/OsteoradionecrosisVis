@@ -10,6 +10,7 @@ interface lineplotItem {
     color: string,
     isPrimary: boolean,
     isConf: boolean,
+    value: number,
 }
 interface legendItem {
     x: number,
@@ -101,6 +102,7 @@ export default function ResultGraph(props: any){
                 // 'color': colorScale(plotVals[i]),
                 'isPrimary': isPrimary,
                 'isConf': false,
+                'value': i,
             }
             return entry
         });
@@ -121,12 +123,14 @@ export default function ResultGraph(props: any){
                     'color': 'grey',
                     'isPrimary': false,
                     'isConf': true,
+                    'value': -1,
                 }
                 const lowerEntry: lineplotItem = {
                     'path': pathFunc(lowerPath),
                     'color': 'grey',
                     'isPrimary': false,
                     'isConf': true,
+                    'value': -2,
                 }
 
                 confBounds.push(upperEntry);
@@ -138,30 +142,36 @@ export default function ResultGraph(props: any){
                     'color': 'gray',
                     'isPrimary': false,
                     'isConf': true,
+                    'value': -3,
                 })
             }
         }
 
-        svg.selectAll('.path').remove();
-        var lines = svg.selectAll('path').filter('.path').data(results.concat(confBounds));
+        // svg.selectAll('.path').remove();
+        var lines = svg.selectAll('path').filter('.path').data(results.concat(confBounds), (d: lineplotItem) => d.value);
         lines.enter()
-            .append('path').attr('class',(d: lineplotItem) => d.isPrimary? 'path pathPrimary': 'path')
+            .append('path').attr('class',(d: lineplotItem) => d.isPrimary? 'path pathPrimary': d.isConf? 'path conf': 'path altPath')
+            .merge(lines).transition(10000)
             .attr('d', (d: lineplotItem) => d.path)
             .attr('fill','none')
             .attr('stroke', (d: lineplotItem) => d.color)
             .attr('stroke-opacity', (d: lineplotItem) => d.isConf? .8:1)
             .attr('stroke-dasharray', (d: lineplotItem) => d.isPrimary? '': '10 2')
             .attr('stroke-width', (d: lineplotItem) => d.isPrimary? 4: d.isConf? 2:4);
-
-        svg.selectAll('.pathFill').remove();
-        var confplot = svg.selectAll('path').filter('.pathFill').data(confFill);
+        lines.exit().remove()
+        
+        // svg.selectAll('.pathFill').remove();
+        var confplot = svg.selectAll('path').filter('.pathFill').data(confFill, (d: lineplotItem) => d.value);
         confplot.enter()
-            .append('path').attr('class','pathFill')
+            .append('path').attr('class','pathFill conf')
+            .merge(confplot).transition(10000)
             .attr('d', (d: lineplotItem) => d.path)
             .attr('fill','grey')
-            .attr('opacity',.3)
+            .attr('fill-opacity',.5)
             .attr('stroke', 'none');
-        
+        confplot.exit().remove();
+
+        svg.selectAll('.altPath').raise();
         svg.selectAll('.pathPrimary').raise();
 
         const legendX: number = width - margin.x[1] - legendSpacing + 15;
@@ -169,18 +179,6 @@ export default function ResultGraph(props: any){
         const lBoxSize: number = Math.min(legendSpacing/2,30, (height - margin.y[1] - margin.y[0] - titleSpacing)/(results.length) - 5);
         const fontSize = Math.min(lBoxSize*.7,18);
 
-        // let legendData: legendItem[] = [{
-        //     'x': legendX,
-        //     'y': legendYCurr,
-        //     'textX': legendX + legendSpacing/4,
-        //     'textY': legendYCurr,
-        //     'color': 'none',
-        //     'text': '',
-        //     'width':0,
-        //     'height': 0,
-        //     'isPrimary': false,
-        // }];
-        // legendYCurr += .6*fontSize;
 
         let legendData: legendItem[] = [];
 
@@ -203,10 +201,12 @@ export default function ResultGraph(props: any){
             legendYCurr += 5 + lBoxSize;
         }
 
-        svg.selectAll('.legend').remove();
+        // svg.selectAll('.legend').remove();
+
         let lRects = svg.selectAll('rect').filter('.legend').data(legendData);
         lRects.enter()
             .append('rect').attr('class','legend')
+            .merge(lRects).transition(10000)
             .attr('x', (d: legendItem) => d.x)
             .attr('y', (d: legendItem) => d.y)
             .attr('width', (d: legendItem) => d.width)
@@ -214,20 +214,19 @@ export default function ResultGraph(props: any){
             .attr('fill', (d: legendItem) => d.color)
             .attr('stroke', 'white')
             .attr('stroke-width',2);
-
+        lRects.exit().remove();
+        
         let lText = svg.selectAll('text').filter('.legend').data(legendData);
         lText.enter()
             .append('text').attr('class','legend')
+            .merge(lText).transition(10000)
             .attr('x', (d: legendItem) => d.textX)
             .attr('y', (d: legendItem) => d.textY)
             .attr('dominant-baseline','middle')
-            // .attr('font-size',(d: legendItem,i: number) => i === 0?  1.1*fontSize:fontSize)
-            // .attr('font-weight',(d: legendItem,i: number) => i === 0? 'bold':'')
-            // .attr('text-anchor',(d: legendItem,i: number) => i === 0? 'middle':'start')
             .attr('font-size', Math.min(16,fontSize))
             .attr('text-anchor', 'start')
             .text((d: legendItem) => d.text);
-
+        lText.exit().remove();
     
         svg.selectAll('.tick').remove();
         let lTicks = svg.selectAll('.tick').data(times);
@@ -268,7 +267,21 @@ export default function ResultGraph(props: any){
             .attr('font-size',yLabelSpacing/3)
             .text((v: number) => (v*100).toFixed(0)+'%')
 
-    },[svg,props.data])
+        if(props.showUncertainty){
+            svg.selectAll('.conf').attr('opacity','');
+        } else{
+            svg.selectAll('.conf').attr('opacity',0);
+        }
+    },[svg,props.data]);
+
+    useEffect(()=>{
+        if(svg === undefined){ return }
+        if(props.showUncertainty){
+            svg.selectAll('.conf').attr('opacity','');
+        } else{
+            svg.selectAll('.conf').attr('opacity',0);
+        }
+    },[svg,props.showUncertainty])
 
     const defaultStyle = {'height':'95%','width':'95%'}
     const style = Object.assign(defaultStyle,props.style || {})

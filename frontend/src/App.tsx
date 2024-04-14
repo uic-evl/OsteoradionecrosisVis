@@ -5,6 +5,8 @@ import { ChakraProvider } from '@chakra-ui/react'
 import ResultGraph from './components/ResultGraph';
 import OutcomeTable from './components/OutcomeTable';
 import {Patient,LineGraphResult,LineGraphCollection} from './types';
+import About from './components/About';
+
 import {gamma} from 'mathjs'
 
 
@@ -43,6 +45,14 @@ function getResults(v1: number, v2: number, v3: number, times: number[]): LineGr
 function App() {
 
   const [data,setData] = useState<Patient>({'D30': 0, 'var2': 0, 'var3': 0});
+  const [showUncertainty, setShowUncertainty] = useState<boolean>(true);
+  const [selectedTime, setSelectedTime] = useState<number>(0);
+
+  const selectedTimeResult: number[] = useMemo(()=>{
+    const res = getResults(data['D30'],data['var2'],data['var3'], [selectedTime]);
+    return [res.values[0],res.valuesLower[0],res.valuesUpper[0]];
+  },[data,selectedTime])
+  
   const timesToPlot = [0,6,12,18,24,30,36,42,48,54,60];
   const plotVariations: object = {
     'D30': [10.0,20,30,40,50,60,70,80,90,99],
@@ -85,7 +95,7 @@ function App() {
 
   },[data]);
 
-  const graphStyle: any = {'width':'100%','height':'31.5%','marginTop':'1%'}
+  const graphStyle: any = {'width':'100%','height':'calc(31.5% - .5em)','marginTop':'1%'}
 
   function makeGraph(varName: string){
     return (
@@ -96,9 +106,41 @@ function App() {
             inputData={data}
             varName={varName}
             data={results}
+            showUncertainty={showUncertainty}
           />
         </div>
       </div>
+    )
+  }
+
+  function makeStateToggles(names: string[] | number[] | boolean[],stateAttr: any,setStateAttr: any,displayNames: undefined | string[],secondaryAttr: undefined | any): JSX.Element[]{
+    return names.map((n: any,i: number)=>{
+        const active = n === stateAttr;
+        const onClick = active? ()=>{}: ()=>setStateAttr(n);
+        var className = 'toggleButton';
+        if(active){
+            if(secondaryAttr === undefined){
+                className += ' toggleButtonCue'
+            } else{
+                className += ' toggleButtonActive';
+            }
+        }
+        if(n === secondaryAttr){
+            className += ' toggleButtonCue'
+        }
+        let displayName =  n;
+        if(displayNames !== undefined){
+            displayName = displayNames[i];
+        }
+        return <div key={displayName} className={className} onClick={onClick}>{displayName}</div>
+    });
+}
+
+  function makeGraphToggle(){
+    return (
+      <>
+        {makeStateToggles([true,false],showUncertainty,setShowUncertainty,['show','hide'],undefined)}
+      </>
     )
   }
 
@@ -111,23 +153,38 @@ function App() {
           style={{'height':'95vh','width':'25em','display':'inline-block','margin':'.2em','marginTop':'2.5vh','marginLeft':'2.5vw'}}
           className={'shadow'}
         >
-          <div style={{'height':'100%','width':'100%'}}>
-            <ControlPanel data={data} setData={setData} results={results} getDisplayName={getDisplayName} style={{'marginTop':'0em','alignItems':'center','justifyContent':'center','display':'flex'}}></ControlPanel>
+          <div style={{'height':'calc(100% - 5em)','width':'100%'}}>
+            <ControlPanel 
+              data={data} 
+              setData={setData} 
+              results={results} 
+              getDisplayName={getDisplayName} 
+              selectedTime={selectedTime}
+              setSelectedTime={setSelectedTime}
+              selectedTimeResult={selectedTimeResult}
+              style={{'marginTop':'0em','alignItems':'center','justifyContent':'center','display':'flex'}}
+            />
           </div>
-          {/* <div style={{'height':'calc(99% - ' + controlPanelSize + ')','width':'100%'}}>
-            <OutcomeTable inputData={data} data={results}/>
-          </div> */}
+          <div style={{'height': '2em','width':'100%'}}>
+            <About style={{'display':'inline','height': '2em','fontSize':'.75em'}}></About>
+          </div>
         </div>
         <div 
           style={{'height':'95vh','width':'calc(95vw - 50em - 2em)','maxWidth':'80vh','display':'inline-block','margin':'.2em','marginTop':'2.5vh','marginLeft': '1em'}}
           className={'shadow'}
         >
+            
             {makeGraph('D30')}
             {makeGraph('var2')}
             {makeGraph('var3')}
+        
+            <div style={{'width':'100%','margin':'0px','marginTop':'1em'}}>
+              {makeGraphToggle()}
+              <div className={'toggleButtonLabel'}>Uncertainty</div>
+            </div>
         </div>
         <div id={'controlPanel'} 
-          style={{'height':'95vh','width':'25em','display':'inline-block','margin':'.2em','marginTop':'2.5vh','marginLeft':'1em'}}
+          style={{'height':'95vh','width':'calc(5vw + 25em)','display':'inline-block','margin':'.2em','marginTop':'2.5vh','marginLeft':'1em'}}
           className={'shadow'}
         >
           <div style={{'height':'100%','width':'100%'}}>

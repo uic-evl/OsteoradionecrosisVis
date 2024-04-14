@@ -55,6 +55,19 @@ hr:after {
   top: -13px;
 }
 
+
+.chakra-button{
+  height: auto!important;
+  padding: .5em;
+  padding-top: .2em;
+  padding-bottom: .2em;
+  border-radius: .2em;
+  margin: 0em!important;
+  font-size: 1em!important;
+  margin-top:.8em!important;
+}
+
+
 .submitButton {
   height: auto;
   font-size: 1em;
@@ -78,8 +91,8 @@ hr:after {
 .toggleButton {
   height: auto;
   font-size: 1em;
-  color: white;
-  background-color: #6061bd;
+  color: black;
+  background-color: #b3b3b3;
   width: auto;
   display: inline-flex;
   padding: .5em;
@@ -91,6 +104,15 @@ hr:after {
   cursor: pointer;
   box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.25);
 }
+
+
+.toggleButtonCue {
+  background-color: #080101;
+  cursor: default!important;
+  color: white;
+  box-shadow: none;
+}
+
 
 .toggleButtonLabel{
   height: auto;
@@ -110,8 +132,8 @@ hr:after {
 
 .modalButton, .modalButton > * {
   height: auto!important;
-  font-size: 10em!important;
-  color: grey;
+  font-size: 1.5em!important;
+  color: blue;
   border: .1rem solid grey;
   background-color: #afe9af;
   width: auto;
@@ -120,7 +142,6 @@ hr:after {
   padding-top: .2em;
   padding-bottom: .2em;
   border-radius: .2em!important;
-  margin: 0em!important;
   font-weight: bold;
   cursor: pointer;
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.25);
@@ -132,13 +153,6 @@ hr:after {
   padding: 0!important;
 }
 
-.toggleButtonActive {
-  border: .1rem solid grey;
-  background-color: #eeeeee;
-  cursor: default!important;
-  color: black;
-  box-shadow: none;
-}
 
 .d3-component{
   height: 100%!important;
@@ -150,18 +164,6 @@ hr:after {
   transform-origin: 0, 0;
   overflow-y: visible!important;
 }
-
-.chakra-button{
-  height: auto!important;
-  padding: .5em;
-  padding-top: .2em;
-  padding-bottom: .2em;
-  border-radius: .2em;
-  margin: 0em!important;
-  font-size: 1em!important;
-  margin-top:.8em!important;
-}
-
 
 .spinner{
   height: min(50%,50px)!important;

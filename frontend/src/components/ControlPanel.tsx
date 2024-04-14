@@ -15,6 +15,9 @@ export default function ControlPanel(props: any){
     const dentalNames = ['No','Yes'];
     const dentalValues = [0,1];
 
+    const getCI = (v: number[]) => v[0].toFixed(0) + ' (' + v[1].toFixed(0) + '-' + v[2].toFixed(0) + ') Months';
+    const getCIPct = (v: number[]) => (100*(1-v[0])).toFixed(0) + '% (' + (100*(1-v[2])).toFixed(0) + '-' + (100*(1-v[1])).toFixed(0) + '%)';
+
     function updateInput(e: any){
         const value: number|string = e.target.value;
         if(Number(value) !== undefined){
@@ -57,6 +60,7 @@ export default function ControlPanel(props: any){
             <ButtonGroup key={key} style={{'display':'block','marginTop':'1em','width':'100%','maxWidth':'100%'}}>
                 <div 
                     className={'toggleButtonLabel'}
+                    key={'inputkey'+key}
                 >
                     {props.getDisplayName(key)}
                 </div>
@@ -67,6 +71,7 @@ export default function ControlPanel(props: any){
                 style={{'marginLeft':'0px','maxWidth':'6em','maxHeight':'1.75em'}}
                 type='number'
                 name={key}
+                key={'input'+key}
                 onChange={updateInput}
                 />
             </ButtonGroup>
@@ -82,7 +87,7 @@ export default function ControlPanel(props: any){
         const names: string[] = optionNames !== undefined? optionNames: options.map(d => d+'');
         const rOptions = options.map((d: number, i: number) => {
             const rName: string = names[i];
-            return (<Radio value={d+''}>{rName}</Radio>)
+            return (<Radio value={d+''} key={key+i+'radiooption'}>{rName}</Radio>)
         });
         return (
         <RadioGroup 
@@ -93,6 +98,7 @@ export default function ControlPanel(props: any){
             >
             <div 
                 className={'toggleButtonLabel'}
+                key={'radio2'+key}
             >
                 {props.getDisplayName(key)}
             </div>
@@ -103,6 +109,40 @@ export default function ControlPanel(props: any){
         )
     }   
 
+    function updateTime(e: any){
+        const value: number|string = e.target.value;
+        if(Number(value) !== undefined){
+            props.setSelectedTime(value);
+        }
+    }
+
+    function makeSelectTimeThing(){
+        return (
+            <div>
+                <ButtonGroup key={'selectTimeInput'} style={{'display':'block','marginTop':'1em','width':'100%','maxWidth':'100%'}}>
+                    <div 
+                        className={'toggleButtonLabel'}
+                    >
+                        {'ORN Risk At: '}
+                    </div>
+                    <Input 
+                    variant='outline' 
+                    size={'lg'} 
+                    placeholder={props.selectedTime} 
+                    style={{'margin':'0px','maxWidth':'2.5em','maxHeight':'1.75em','padding':'.2em'}}
+                    type='number'
+                    name={props.selectedTime}
+                    onChange={updateTime}
+                    />
+                    <div 
+                        className={'toggleButtonLabel'}
+                    >
+                        {'Months: ' + getCIPct(props.selectedTimeResult)}
+                    </div>
+                </ButtonGroup>
+            </div>
+        )
+    }
     const [survivalTimes,medianSurvivalTimes]: [number[],number[]] = useMemo(()=>{
         if(props.results === undefined){return [[0,0,0],[0,0,0]]}
         const res = props.results.results.filter((d,i) => props.results.changedVars[i] == 'none')[0]
@@ -111,7 +151,6 @@ export default function ControlPanel(props: any){
 
     const defaultStyle = {'height':'95%','width':'95%'};
     const style = Object.assign(defaultStyle,props.style || {});
-    const getCI = (v: number[]) => v[0].toFixed(0) + ' (' + v[1].toFixed(0) + '-' + v[2].toFixed(0) + ') Months';
     return (
         <div
             style={style}
@@ -131,8 +170,11 @@ export default function ControlPanel(props: any){
                 </Button>
                 <br></br>
                 <hr style={{'marginBottom':'1em','marginTop':'1em'}}></hr>
+                {makeSelectTimeThing()}
+                <hr style={{'marginBottom':'1em','marginTop':'1em'}}></hr>
                 <div>{'Mean Survival: ' + getCI(survivalTimes) }</div>
                 <div>{'Median Survival: ' + getCI(medianSurvivalTimes) }</div>
+                
             </div>
             
         </div>
