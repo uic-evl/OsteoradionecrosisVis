@@ -1,9 +1,7 @@
-import React, {useState, useEffect, useRef,useMemo} from 'react';
+import {useEffect, useRef} from 'react';
 import useSVGCanvas from './useSVGCanvas';
-import Utils from '../modules/Utils.js';
 import * as d3 from 'd3';
-import * as constants from "../modules/Constants.js";
-import {Margin, Patient,LineGraphResult,LineGraphCollection} from '../types';
+import {Margin} from '../types';
 
 interface TableBlock {
     row: number,
@@ -22,7 +20,7 @@ export default function OutcomeTable(props: any){
     useEffect(()=>{
         if(svg === undefined || props.data === undefined){ return }
         
-        var times: number[] = props.data.results[0].times;
+        var times: number[] = props.data.results[0].times.filter(d => d%12 == 0);
         const values: number[] = props.data.results[0].values;
         var tableData: TableBlock[] = [
             {row: 0, col: 0, text: 'Time','color':'none'},

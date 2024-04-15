@@ -1,9 +1,7 @@
-import React, {useState, useEffect, useRef,useMemo} from 'react';
+import {useEffect, useRef} from 'react';
 import useSVGCanvas from './useSVGCanvas';
-import Utils from '../modules/Utils.js';
 import * as d3 from 'd3';
-import * as constants from "../modules/Constants.js";
-import {Margin, Patient,LineGraphResult,LineGraphCollection} from '../types';
+import {Margin,LineGraphResult} from '../types';
 
 interface lineplotItem {
     path: string,
@@ -76,7 +74,7 @@ export default function ResultGraph(props: any){
 
         const colorInterpolator = INTERPOLATORS[props.varName]? INTERPOLATORS[props.varName]:  d3.interpolateRgbBasis(["#313695",'#ffffbf',"#a50026"]);
         const colorScale = (d: number) => colorInterpolator(cvScale(d))
-
+        console.log("here",width)
 
         const legendSpacing = Math.min(width/3, 120);
         const xStart = margin.x[0] + yLabelSpacing;
@@ -214,6 +212,7 @@ export default function ResultGraph(props: any){
             .attr('stroke-width',2);
         lRects.exit().remove();
         
+        const legendFontSize = width > 345? Math.min(16,fontSize): width > 280? 12: 9;
         let lText = svg.selectAll('text').filter('.legend').data(legendData);
         lText.enter()
             .append('text').attr('class','legend')
@@ -221,13 +220,14 @@ export default function ResultGraph(props: any){
             .attr('x', (d: legendItem) => d.textX)
             .attr('y', (d: legendItem) => d.textY)
             .attr('dominant-baseline','middle')
-            .attr('font-size', Math.min(16,fontSize))
+            .attr('font-size', legendFontSize)
             .attr('text-anchor', 'start')
             .text((d: legendItem) => d.text);
         lText.exit().remove();
     
         svg.selectAll('.tick').remove();
-        let lTicks = svg.selectAll('.tick').data(times);
+        const tickData = width > 480? [...times]: width > 255? [...times].filter(d => d%12 == 0): [...times].filter(d => d%24 == 0)
+        let lTicks = svg.selectAll('.tick').data(tickData);
         const tickWidth: number = 3;
         lTicks.enter()
             .append('rect').attr('class','tick')
@@ -237,16 +237,16 @@ export default function ResultGraph(props: any){
             .attr('fill','grey').attr('opacity',.5);
 
         svg.selectAll('.tickText').remove();
-        let tickText = svg.selectAll('.tickText').data(times);
+        let tickText = svg.selectAll('.tickText').data(tickData);
         tickText.enter()
             .append('text').attr('class','tickText')
             .attr('x',(d:number) => xScale(d))
             .attr('y', height - (subtitleSpacing/4) - margin.y[1])
             .attr('text-anchor','middle').attr('dominant-baseline','middle')
-            .attr('font-size',subtitleSpacing*.7)
+            .attr('font-size',width > 340? subtitleSpacing*.7: subtitleSpacing*.5)
             .text((d:number) => d + 'm');
 
-        const yGridData = [.25,.5,.75,1];
+        const yGridData = [0,.25,.5,.75,1];
         svg.selectAll('.yGrid').remove();
         const yGrid = svg.selectAll('.yGrid').data(yGridData);
         yGrid.enter().append('path')

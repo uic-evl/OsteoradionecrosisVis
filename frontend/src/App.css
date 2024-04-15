@@ -36,6 +36,13 @@
   border-radius: 1em!important;
 }
 
+.resultText{
+  font-size: 1.2em;
+  color: steelblue;
+  font-weight: bold;
+  font-family: Tahoma;
+}
+
 hr {
   border: none;
   border-top: 3px double #333;
@@ -199,12 +206,14 @@ hr:after {
   font-size: 1.1em;
   font-weight: bold!important;
   font-family: Georgia!important;
+  white-space: nowrap;
 } 
 
 .suptitle{
   font-size: .9em;
   font-weight: bold!important;
   font-family: Georgia!important;
+  white-space: nowrap;
 }
 
 .chakra-stack{

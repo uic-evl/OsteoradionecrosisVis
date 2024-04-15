@@ -1,11 +1,12 @@
-import React, {useState,useEffect,useMemo} from 'react';
+import {useState,useMemo} from 'react';
 import './App.css';
 import ControlPanel from './components/ControlPanel';
 import { ChakraProvider, Grid, GridItem } from '@chakra-ui/react'
 import ResultGraph from './components/ResultGraph';
 import OutcomeTable from './components/OutcomeTable';
+import TimeToEvent from './components/TimeToEvent';
 import {Patient,LineGraphResult,LineGraphCollection} from './types';
-import About from './components/About';
+// import About from './components/About';
 
 import {gamma} from 'mathjs'
 
@@ -47,6 +48,7 @@ function App() {
   const [data,setData] = useState<Patient>({'D30': 0, 'var2': 0, 'var3': 0});
   const [showUncertainty, setShowUncertainty] = useState<boolean>(true);
   const [selectedTime, setSelectedTime] = useState<number>(0);
+  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
   const selectedTimeResult: number[] = useMemo(()=>{
     const res = getResults(data['D30'],data['var2'],data['var3'], [selectedTime]);
@@ -144,19 +146,18 @@ function App() {
     )
   }
 
-  const controlPanelSize: string = '18em';
 
   return (
     <ChakraProvider>
     <div className="App" style={{'height':'100%','width':'100%','display':'block'}}>
       <Grid
-        templateColumns={'2em repeat(2, 1fr) 2em'}
+        templateColumns={'1vw 22em 1fr 1fr 1vw'}
         gap={2}
-        templateRows={'2em repeat(2, 1fr) 2em'}
+        templateRows={'2vh 20em 1fr 1vh'}
         h='100%'
         w='100%'
       >
-        <GridItem className={'edge'} colSpan={4} rowSpan={1}></GridItem>
+        <GridItem className={'edge'} colSpan={5} rowSpan={1}></GridItem>
         <GridItem className={'edge'} colSpan={1} rowSpan={4}></GridItem>
 
         <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={1}>
@@ -172,45 +173,62 @@ function App() {
               selectedTime={selectedTime}
               setSelectedTime={setSelectedTime}
               selectedTimeResult={selectedTimeResult}
+              setHasSubmitted={setHasSubmitted}
               style={{'marginTop':'0em','alignItems':'center','justifyContent':'center','display':'flex','width':'100%'}}
             />
           </div>
           <div style={{'height': '2em','width':'100%'}}>
-            <About style={{'display':'inline','height': '2em','fontSize':'.75em'}}></About>
-          </div>
+              About
+              {/* <About style={{'display':'inline','height': '2em','fontSize':'.75em'}}></About> */}
+            </div>
         </div>
         </GridItem>
         <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={1}>
-           <OutcomeTable inputData={data} data={results}/>
+            {hasSubmitted? <TimeToEvent
+              data={data} 
+              setData={setData} 
+              results={results} 
+              getDisplayName={getDisplayName} 
+              selectedTime={selectedTime}
+              setSelectedTime={setSelectedTime}
+              selectedTimeResult={selectedTimeResult}
+              style={{'marginTop':'0em','alignItems':'top','justifyContent':'center','display':'flex','width':'100%'}}
+            /> : <></>}
         </GridItem>
-        <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={2}>
+        <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={1}>
+           {hasSubmitted? <OutcomeTable inputData={data} data={results}/> : <></>}
+        </GridItem>
+        <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={3}>
           <Grid
             templateColumns={'repeat(3,1fr)'}
-            templateRows={'1.1em 1fr 2em'}
+            templateRows={'1.1em 1.5em 1fr'}
             className={'fillSpace'}
             gap={2}
           >
             <GridItem colSpan={3} rowSpan={1}>
-              <div className={'title'}>Partial Effects on ORN-Free Survival</div>
-            </GridItem>
-            <GridItem colSpan={1} rowSpan={1}>
-              {makeGraph('D30')}
-            </GridItem>
-            <GridItem colSpan={1} rowSpan={1}>
-              {makeGraph('var2')}
-            </GridItem>
-            <GridItem colSpan={1} rowSpan={1}>
-              {makeGraph('var3')}
+              <div className={'title'} style={{'display':"inline",'justifyContent':'center'}}>
+                Partial Effects on ORN-Free Survival
+              </div>
             </GridItem>
             <GridItem colSpan={3} rowSpan={1}>
               {makeGraphToggle()}
              <div className={'toggleButtonLabel'}>Uncertainty</div>
             </GridItem>
+            <GridItem colSpan={1} rowSpan={1}>
+              {hasSubmitted? makeGraph('D30'): <></>}
+            </GridItem>
+            <GridItem colSpan={1} rowSpan={1}>
+              {hasSubmitted? makeGraph('var2'): <></>}
+            </GridItem>
+            <GridItem colSpan={1} rowSpan={1}>
+              {hasSubmitted? makeGraph('var3'): <></>}
+            </GridItem>
+            
           </Grid>
       
         </GridItem>
         <GridItem className={'edge'} colSpan={1} rowSpan={4}></GridItem>
-        <GridItem className={'edge'} colSpan={4} rowSpan={1}></GridItem>
+        <GridItem className={'edge'} colSpan={5} rowSpan={1}></GridItem>
       </Grid>
     </div>
     </ChakraProvider>

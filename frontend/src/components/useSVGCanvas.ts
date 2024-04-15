@@ -21,7 +21,6 @@ export default function useSVGCanvas(d3Container: React.MutableRefObject<any>): 
             var canvas: any = d3.select(d3Container.current)
                 .append('svg')
                 .attr('class','frameEntryD3')
-                // .attr('viewbox',[0,0,width,height])
                 .attr('width',w)
                 .attr('height',h);
 
