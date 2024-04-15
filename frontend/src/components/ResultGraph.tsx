@@ -74,7 +74,6 @@ export default function ResultGraph(props: any){
 
         const colorInterpolator = INTERPOLATORS[props.varName]? INTERPOLATORS[props.varName]:  d3.interpolateRgbBasis(["#313695",'#ffffbf',"#a50026"]);
         const colorScale = (d: number) => colorInterpolator(cvScale(d))
-        console.log("here",width)
 
         const legendSpacing = Math.min(width/3, 120);
         const xStart = margin.x[0] + yLabelSpacing;
@@ -153,7 +152,7 @@ export default function ResultGraph(props: any){
             .attr('stroke', (d: lineplotItem) => d.color)
             .attr('stroke-opacity', (d: lineplotItem) => d.isConf? .8:1)
             .attr('stroke-dasharray', (d: lineplotItem) => d.isPrimary? '': '10 2')
-            .attr('stroke-width', (d: lineplotItem) => d.isPrimary? 4: d.isConf? 2:4);
+            .attr('stroke-width', (d: lineplotItem) => d.isPrimary? 6: d.isConf? 2:4);
         lines.exit().remove()
         
         // svg.selectAll('.pathFill').remove();
@@ -253,7 +252,7 @@ export default function ResultGraph(props: any){
             .attr('class','yGrid')
             .attr('d', (v: number) => pathFunc([[xStart,yScale(v)],[xEnd,yScale(v)]]))
             .attr('fill','none')
-            .attr('stroke','grey').attr('opacity',1);
+            .attr('stroke','grey').attr('opacity',.4);
 
         svg.selectAll('.yGridText').remove();
         const yGridText = svg.selectAll('.yGridText').data(yGridData);

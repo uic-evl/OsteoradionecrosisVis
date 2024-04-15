@@ -46,7 +46,7 @@ function getResults(v1: number, v2: number, v3: number, times: number[]): LineGr
 function App() {
 
   const [data,setData] = useState<Patient>({'D30': 0, 'var2': 0, 'var3': 0});
-  const [showUncertainty, setShowUncertainty] = useState<boolean>(true);
+  const [showUncertainty, setShowUncertainty] = useState<boolean>(false);
   const [selectedTime, setSelectedTime] = useState<number>(0);
   const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 

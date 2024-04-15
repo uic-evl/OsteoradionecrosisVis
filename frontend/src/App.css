@@ -99,7 +99,7 @@ hr:after {
   height: auto;
   font-size: 1em;
   color: black;
-  background-color: #b3b3b3;
+  background-color: #e7e7e7;
   width: auto;
   display: inline-flex;
   padding: .5em;
@@ -114,7 +114,7 @@ hr:after {
 
 
 .toggleButtonCue {
-  background-color: #080101;
+  background-color: #066c86;
   cursor: default!important;
   color: white;
   box-shadow: none;

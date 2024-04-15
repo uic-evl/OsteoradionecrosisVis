@@ -1,6 +1,6 @@
 import {useRef,useMemo} from 'react';
 import { ButtonGroup, Input} from '@chakra-ui/react';
-
+import PctVis from './PctVis'
 
 export default function TimeToEvent(props: any){
 
@@ -53,6 +53,9 @@ export default function TimeToEvent(props: any){
                         {getCIPct(props.selectedTimeResult)}
                     </div>
                 </ButtonGroup>
+                <div style={{'width':'100%','height':'1.5em'}}>
+                    <PctVis data={props.selectedTimeResult}/>
+                </div>
             </div>
         )
     }
