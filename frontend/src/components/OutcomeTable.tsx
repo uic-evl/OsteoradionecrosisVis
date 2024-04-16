@@ -145,7 +145,7 @@ export default function OutcomeTable(props: any){
         errorLines.enter()
             .append('path')
             .attr('class',(d: errorLineItem) => 'errorLine')
-            .merge(errorLines)
+            .merge(errorLines).transition(10000)
             .attr('d', (d: errorLineItem) => lineFunc(d.path))
             .attr('fill','none')
             .attr('stroke','black').attr('stroke-width',3);
