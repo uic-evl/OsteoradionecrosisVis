@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/OsteoradionecrosisVis/static/css/main.99569d2e.css",
-    "main.js": "/OsteoradionecrosisVis/static/js/main.f0f610f3.js",
+    "main.css": "/OsteoradionecrosisVis/static/css/main.5adf8f6e.css",
+    "main.js": "/OsteoradionecrosisVis/static/js/main.68ec2395.js",
     "static/js/592.bf6ca574.chunk.js": "/OsteoradionecrosisVis/static/js/592.bf6ca574.chunk.js",
     "static/media/model.png": "/OsteoradionecrosisVis/static/media/model.f816c6fd5dc30206d8b1.png",
     "index.html": "/OsteoradionecrosisVis/index.html",
-    "main.99569d2e.css.map": "/OsteoradionecrosisVis/static/css/main.99569d2e.css.map",
-    "main.f0f610f3.js.map": "/OsteoradionecrosisVis/static/js/main.f0f610f3.js.map",
+    "main.5adf8f6e.css.map": "/OsteoradionecrosisVis/static/css/main.5adf8f6e.css.map",
+    "main.68ec2395.js.map": "/OsteoradionecrosisVis/static/js/main.68ec2395.js.map",
     "592.bf6ca574.chunk.js.map": "/OsteoradionecrosisVis/static/js/592.bf6ca574.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.99569d2e.css",
-    "static/js/main.f0f610f3.js"
+    "static/css/main.5adf8f6e.css",
+    "static/js/main.68ec2395.js"
   ]
 }
