@@ -6,7 +6,7 @@ import ResultGraph from './components/ResultGraph';
 import OutcomeTable from './components/OutcomeTable';
 import TimeToEvent from './components/TimeToEvent';
 import {Patient,LineGraphResult,LineGraphCollection} from './types';
-// import About from './components/About';
+import About from './components/About';
 
 import {gamma} from 'mathjs'
 
@@ -178,8 +178,7 @@ function App() {
             />
           </div>
           <div style={{'height': '2em','width':'100%'}}>
-              About
-              {/* <About style={{'display':'inline','height': '2em','fontSize':'.75em'}}></About> */}
+              <About style={{'display':'inline','height': '2em','fontSize':'.75em'}}></About>
             </div>
         </div>
         </GridItem>
