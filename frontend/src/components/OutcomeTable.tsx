@@ -28,7 +28,7 @@ export default function OutcomeTable(props: any){
     const [svg, height, width, tTip] = useSVGCanvas(d3Container);
     
     const margin: Margin = {x: [10,15],y: [15,15]};
-    const barGlyphWidth = Math.max(width/2, 200);
+    const barGlyphWidth = Math.min(width/2, 300);
     const barSpacing = 10;
     const colorScale = d3.interpolateGreys;
     const filterCondition = (v: number): boolean => v%12 === 0;
@@ -118,7 +118,7 @@ export default function OutcomeTable(props: any){
         const blockText= svg.selectAll('.blockText').data(tableData);
         blockText.enter()
             .append('text').attr('class','blockText')
-            .attr('x', (d: TableBlock) => getX(d.col) + blockWidth/2)
+            .attr('x', (d: TableBlock) => Math.max(margin.x[0]+50,getX(d.col) + blockWidth/2))
             .attr('y', (d: TableBlock) => getY(d.row) + blockHeight/2)
             .attr('dominant-baseline','middle').attr('text-anchor','middle')
             .text((d: TableBlock) => d.text);

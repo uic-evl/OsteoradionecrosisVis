@@ -41,6 +41,7 @@
   color: steelblue;
   font-weight: bold;
   font-family: Tahoma;
+  white-space: nowrap;
 }
 
 hr {

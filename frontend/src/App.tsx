@@ -194,7 +194,7 @@ function App() {
               style={{'marginTop':'0em','alignItems':'top','justifyContent':'center','display':'flex','width':'100%'}}
             /> : <></>}
         </GridItem>
-        <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={1}>
+        <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={1} style={{'minWidth':'25em'}}>
            {hasSubmitted? <OutcomeTable inputData={data} data={results}/> : <></>}
         </GridItem>
         <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={3}>
