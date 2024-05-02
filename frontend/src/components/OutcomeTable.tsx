@@ -151,7 +151,13 @@ export default function OutcomeTable(props: any){
             .attr('stroke','black').attr('stroke-width',3);
         errorLines.exit().remove();
         errorLines.raise();
-    },[svg,props.data])
+    },[svg,props.data]);
+
+    useEffect(()=>{
+        if(svg !== undefined){
+            svg.selectAll(".errorLine").attr('visibility', props.showUncertainty? 'visible':'hidden');
+        }
+    },[props.showUncertainty,svg])
 
     const defaultStyle = {'height':'95%','width':'95%'}
     const style = Object.assign(defaultStyle,props.style || {})

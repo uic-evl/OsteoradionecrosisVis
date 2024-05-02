@@ -29,7 +29,7 @@ export default function PctVis(props:any){
             .domain([0,1])
             .range([xMargin, width-2*xMargin]);
 
-        const fillScale = d3.interpolateRgbBasis(['#fed976','#b10026'])
+        const fillScale = d3.interpolateRgbBasis(['#fed976','#b10026']);
         const rectData: rectItem[] = [
             {
                 width: widthScale((1-props.data[0])),

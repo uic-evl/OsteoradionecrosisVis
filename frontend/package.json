@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://tehwentzel.github.io/OsteoradionecrosisVis",
+  "homepage": "https://uic-evl.github.io/OsteoradionecrosisVis",
   "dependencies": {
     "@ark-ui/react": "^2.0.2",
     "@chakra-ui/react": "^2.8.2",
