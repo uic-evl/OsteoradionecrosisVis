@@ -10,8 +10,8 @@ export default function ControlPanel(props: any){
     const container = useRef(null);
     const [tempData,setTempData] = useState<object>({})
 
-    const smokingStatusNames = ['No/Former','Current'];
-    const smokingStatusValues = [0,1];
+    const genderNames = ['Female','Male'];
+    const genderValues = [0,1];
     const dentalNames = ['No','Yes'];
     const dentalValues = [0,1];
 
@@ -122,8 +122,8 @@ export default function ControlPanel(props: any){
                 <div className={'title'}>
                     {"Patient Features"}    
                 </div>
-                {makeInput('D30')}
-                {makeRadio('var2',smokingStatusValues,smokingStatusNames)}
+                {makeInput('var1')}
+                {makeRadio('var2',genderValues,genderNames)}
                 {makeRadio('var3',dentalValues,dentalNames)}
                 <Button key='submit' style={{'marginTop':'2em!important'}} colorScheme='blue' onClick={updateData}>
                     {'Submit'}

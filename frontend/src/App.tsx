@@ -13,15 +13,15 @@ import {gamma} from 'mathjs'
 
 function getResults(v1: number, v2: number, v3: number, times: number[]): LineGraphResult{
   //based on https://courses.washington.edu/b515/l16.pdf proportional hazzard mdoel kinda
-  const coef: number[] = [-0.089023,-.650660,-.698166];
-  const coefLower: number[] = [-0.112419, -1.066934,-1.220351];
-  const coefUpper: number[] = [-0.065627, -0.234386, -.175981]
-  const intercept: number = 11.39;
-  const interceptLower: number = 9.946831;
-  const interceptUpper: number = 12.825167;
-  const shape: number = Math.exp(-0.274481);
-  const shapeLower: number = Math.exp(-0.406940);
-  const shapeUpper: number = Math.exp(-0.142022);
+  const coef: number[] = [-0.12,-0.48,-0.31];
+  const coefLower: number[] = [-0.15, -1.08,-0.71];
+  const coefUpper: number[] = [-0.10, -0.11, -0.10]
+  const intercept: number = 13.69;
+  const interceptLower: number = 11.77;
+  const interceptUpper: number = 15.62;
+  const shape: number = Math.exp(-0.21);
+  const shapeLower: number = Math.exp(-0.35);
+  const shapeUpper: number = Math.exp(-0.08);
   function calcS(coefficients: number[], inter: number, shp: number): [number[],number,number] {
     const denom: number = Math.exp(coefficients[0]*v1 + coefficients[1]*v2 + coefficients[2]*v3 + inter);
     const vals: number[] = times.map(t => {
@@ -45,32 +45,32 @@ function getResults(v1: number, v2: number, v3: number, times: number[]): LineGr
 }
 function App() {
 
-  const [data,setData] = useState<Patient>({'D30': 0, 'var2': 0, 'var3': 0});
+  const [data,setData] = useState<Patient>({'var1': 0, 'var2': 0, 'var3': 0});
   const [showUncertainty, setShowUncertainty] = useState<boolean>(false);
   const [selectedTime, setSelectedTime] = useState<number>(0);
   const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
   const selectedTimeResult: number[] = useMemo(()=>{
-    const res = getResults(data['D30'],data['var2'],data['var3'], [selectedTime]);
+    const res = getResults(data['var1'],data['var2'],data['var3'], [selectedTime]);
     return [res.values[0],res.valuesLower[0],res.valuesUpper[0]];
   },[data,selectedTime])
   
   const timesToPlot = [0,6,12,18,24,30,36,42,48,54,60];
   const plotVariations: object = {
-    'D30': [10.0,20,30,40,50,60,70,80,90,99],
+    'var1': [10.0,20,30,40,50,60,70,80,90,99],
     'var2': [0.0,1.0],
     'var3': [0.0,1.0],
   }
 
   function getDisplayName(name: string): string{
-    if(name === 'var2'){ return 'Smoking Status'}
+    if(name === 'var2'){ return 'Gender'}
     if(name === 'var3'){ return 'Dental Extraction'}
-    if(name === 'D30'){ return 'D30 Mandible (GY)'}
+    if(name === 'var1'){ return 'D25 Mandible (GY)'}
     return name;
   }
 
   const results: LineGraphCollection = useMemo(()=>{
-    const mainResult = getResults(data.D30,data.var2,data.var3,timesToPlot);
+    const mainResult = getResults(data.var1,data.var2,data.var3,timesToPlot);
     let results: LineGraphResult[] = [mainResult];
     let changedVars: string[] = ['none'];
     let inputs: Patient[] = [Object.assign({},data)];
@@ -88,7 +88,7 @@ function App() {
         const result: LineGraphResult = getResults(tempVals[0],tempVals[1],tempVals[2],timesToPlot);
         results.push(result);
         changedVars.push(key);
-        inputs.push({'D30': tempVals[0],'var2': tempVals[1], 'var3': tempVals[2]})
+        inputs.push({'var1': tempVals[0],'var2': tempVals[1], 'var3': tempVals[2]})
       }
     }
     const resultCollection: LineGraphCollection = {results: results,inputs:inputs,changedVars: changedVars, baselineInput: Object.assign({},data)}
@@ -214,7 +214,7 @@ function App() {
              <div className={'toggleButtonLabel'}>Uncertainty</div>
             </GridItem>
             <GridItem colSpan={1} rowSpan={1}>
-              {hasSubmitted? makeGraph('D30'): <></>}
+              {hasSubmitted? makeGraph('var1'): <></>}
             </GridItem>
             <GridItem colSpan={1} rowSpan={1}>
               {hasSubmitted? makeGraph('var2'): <></>}
@@ -234,59 +234,6 @@ function App() {
   
     
   );
-  // return (
-  //   <ChakraProvider>
-  //   <div className="App" style={{'height':'100%','width':'100%','display':'block'}}>
-  //     <div className={'fillSpace'} style={{'display':'flex'}}>
-  //       <div id={'controlPanel'} 
-  //         style={{'height':'95vh','width':'25em','display':'inline-block','margin':'.2em','marginTop':'2.5vh','marginLeft':'2.5vw'}}
-  //         className={'shadow'}
-  //       >
-  //         <div style={{'height':'calc(100% - 5em)','width':'100%'}}>
-  //           <ControlPanel 
-  //             data={data} 
-  //             setData={setData} 
-  //             results={results} 
-  //             getDisplayName={getDisplayName} 
-  //             selectedTime={selectedTime}
-  //             setSelectedTime={setSelectedTime}
-  //             selectedTimeResult={selectedTimeResult}
-  //             style={{'marginTop':'0em','alignItems':'center','justifyContent':'center','display':'flex'}}
-  //           />
-  //         </div>
-  //         <div style={{'height': '2em','width':'100%'}}>
-  //           <About style={{'display':'inline','height': '2em','fontSize':'.75em'}}></About>
-  //         </div>
-  //       </div>
-  //       <div 
-  //         style={{'height':'95vh','width':'calc(95vw - 50em - 2em)','maxWidth':'80vh','display':'inline-block','margin':'.2em','marginTop':'2.5vh','marginLeft': '1em'}}
-  //         className={'shadow'}
-  //       >
-  //           <div className={'title'} style={{'height':'1.1em','marginBottom':'1em'}}>Partial Effects on ORN-Free Survival</div>
-  //           <div style={{'width':'100%','height':'calc(100% - 4.5em)'}}>
-  //           {makeGraph('D30')}
-  //           {makeGraph('var2')}
-  //           {makeGraph('var3')}
-  //           </div>
-  //           <div style={{'width':'100%','margin':'0px','marginTop':'0em','height':'1em'}}>
-  //             {makeGraphToggle()}
-  //             <div className={'toggleButtonLabel'}>Uncertainty</div>
-  //           </div>
-  //       </div>
-  //       <div id={'controlPanel'} 
-  //         style={{'height':'95vh','width':'calc(5vw + 25em)','display':'inline-block','margin':'.2em','marginTop':'2.5vh','marginLeft':'1em'}}
-  //         className={'shadow'}
-  //       >
-  //         <div style={{'height':'100%','width':'100%'}}>
-  //           <OutcomeTable inputData={data} data={results}/>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  //   </ChakraProvider>
-  
-    
-  // );
 
 }
 

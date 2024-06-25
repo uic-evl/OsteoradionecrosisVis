@@ -23,22 +23,22 @@ interface legendItem {
 }
 
 const INTERPOLATORS = {
-    'D30': d3.interpolateRgbBasis(["#313695",'#ffffbf', "#a50026"]),
+    'var1': d3.interpolateRgbBasis(["#313695",'#ffffbf', "#a50026"]),
     'var2': d3.interpolateLab("#313695", "#a50026"),
     'var3': d3.interpolateLab("#313695", "#a50026"),
 }
 
 function getLegendName(val: number, varName: string): string {
     if(varName === 'var2'){
-        if(val === 0){return 'No'}
-        if(val === 1){ return 'Yes'}
-        if(val === .5){ return 'Former'}
+        if(val === 0){return 'Female'}
+        if(val === 1){ return 'Male'}
+        if(val === .5){ return 'N/A'}
     }
     if(varName === 'var3'){
         if(val === 0){ return 'No'}
         if(val === 1){ return 'Yes'}
     }
-    if(varName === 'D30'){
+    if(varName === 'var1'){
         return val.toFixed(0) + 'Gy'
     }
     return val.toFixed(1)
