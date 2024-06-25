@@ -37,9 +37,9 @@ const modelText: JSX.Element = (
     <img style={{'width':'500px','height':'100%','objectFit':'contain'}} src={model}/>
   </div>
   Where t is time given in months, 
-  D30 is the dose in greys that 30% of the mandible recieves, 
+  D25 is the dose in greys that 25% of the mandible recieves, 
   Dental is 1 if the patient received a dental extraction (otherwise 0), 
-  and Smoking is 1 if the patient currently smokes (otherwise 0)
+  and Gender is 1 if the patient is male (otherwise 0)
 </p>
 )
 export default function About(props){
