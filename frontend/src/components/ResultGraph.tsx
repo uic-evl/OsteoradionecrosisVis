@@ -66,8 +66,8 @@ export default function ResultGraph(props: any){
         }
 
         const currVal = props.data.baselineInput[props.varName];
-        const maxRefVal = props.varName === 'D30'? 100: 1;
-        const minRefVal = props.varName === 'D30'? 10: 0;
+        const maxRefVal = props.varName === 'var1'? 100: 1;
+        const minRefVal = props.varName === 'var1'? 10: 0;
         const cvScale = d3.scaleLinear()
             .domain([minRefVal,maxRefVal])
             .range([0,1]);
