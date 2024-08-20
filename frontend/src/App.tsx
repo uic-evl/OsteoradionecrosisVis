@@ -8,7 +8,9 @@ import TimeToEvent from './components/TimeToEvent';
 import {Patient,LineGraphResult,LineGraphCollection} from './types';
 import About from './components/About';
 
-import {gamma} from 'mathjs'
+import {gamma} from 'mathjs';
+import { MathJaxContext } from 'better-react-mathjax';
+
 
 
 function getResults(v1: number, v2: number, v3: number, times: number[]): LineGraphResult{
@@ -65,7 +67,7 @@ function App() {
   function getDisplayName(name: string): string{
     if(name === 'var2'){ return 'Gender'}
     if(name === 'var3'){ return 'Dental Extraction'}
-    if(name === 'var1'){ return 'D25 Mandible (GY)'}
+    if(name === 'var1'){ return 'D25 Mandible (Gy)'}
     return name;
   }
 
@@ -102,7 +104,7 @@ function App() {
   function makeGraph(varName: string){
     return (
       <div key={varName+'graph'} className={'shadow'} style={graphStyle}>
-        <div className={'suptitle'}>{getDisplayName(varName) + ' vs ORNF survival'}</div>
+        <div className={'suptitle'}>{getDisplayName(varName) + ' vs ORN-Free survival'}</div>
         <div style={{'width':'100%','height':'calc(100% - 1.5em)'}} className={'rounded'}>
           <ResultGraph 
             inputData={data}
@@ -149,87 +151,90 @@ function App() {
 
   return (
     <ChakraProvider>
-    <div className="App" style={{'height':'100%','width':'100%','display':'block'}}>
-      <Grid
-        templateColumns={'1vw 22em 1fr 1fr 1vw'}
-        gap={2}
-        templateRows={'2vh 20em 1fr 1vh'}
-        h='100%'
-        w='100%'
-      >
-        <GridItem className={'edge'} colSpan={5} rowSpan={1}></GridItem>
-        <GridItem className={'edge'} colSpan={1} rowSpan={4}></GridItem>
-
-        <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={1}>
-        <div id={'controlPanel'} 
-          style={{'display':'inline-block'}}
+      <MathJaxContext>
+      <div className="App" style={{'height':'100%','width':'100%','display':'block'}}>
+        <Grid
+          templateColumns={'1vw 22em 1fr 1fr 1vw'}
+          gap={2}
+          templateRows={'2vh 20em 1fr 1vh'}
+          h='100%'
+          w='100%'
         >
-          <div style={{'height':'calc(100% - 5em)','width':'100%'}}>
-            <ControlPanel 
-              data={data} 
-              setData={setData} 
-              results={results} 
-              getDisplayName={getDisplayName} 
-              selectedTime={selectedTime}
-              setSelectedTime={setSelectedTime}
-              selectedTimeResult={selectedTimeResult}
-              setHasSubmitted={setHasSubmitted}
-              style={{'marginTop':'0em','alignItems':'center','justifyContent':'center','display':'flex','width':'100%'}}
-            />
-          </div>
-          <div style={{'height': '2em','width':'100%'}}>
-              <About style={{'display':'inline','height': '2em','fontSize':'.75em'}}></About>
-            </div>
-        </div>
-        </GridItem>
-        <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={1}>
-            {hasSubmitted? <TimeToEvent
-              data={data} 
-              setData={setData} 
-              results={results} 
-              getDisplayName={getDisplayName} 
-              selectedTime={selectedTime}
-              setSelectedTime={setSelectedTime}
-              selectedTimeResult={selectedTimeResult}
-              style={{'marginTop':'0em','alignItems':'top','justifyContent':'center','display':'flex','width':'100%'}}
-            /> : <></>}
-        </GridItem>
-        <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={1} style={{'minWidth':'25em'}}>
-           {hasSubmitted? <OutcomeTable inputData={data} data={results} showUncertainty={showUncertainty}/> : <></>}
-        </GridItem>
-        <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={3}>
-          <Grid
-            templateColumns={'repeat(3,1fr)'}
-            templateRows={'1.1em 1.5em 1fr'}
-            className={'fillSpace'}
-            gap={2}
+          <GridItem className={'edge'} colSpan={5} rowSpan={1}></GridItem>
+          <GridItem className={'edge'} colSpan={1} rowSpan={4}></GridItem>
+
+          <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={1}>
+          <div id={'controlPanel'} 
+            style={{'display':'inline-block'}}
           >
-            <GridItem colSpan={3} rowSpan={1}>
-              <div className={'title'} style={{'display':"inline",'justifyContent':'center'}}>
-                Partial Effects on ORN-Free Survival
+            <div style={{'height':'calc(100% - 5em)','width':'100%'}}>
+              <ControlPanel 
+                data={data} 
+                setData={setData} 
+                results={results} 
+                getDisplayName={getDisplayName} 
+                selectedTime={selectedTime}
+                setSelectedTime={setSelectedTime}
+                selectedTimeResult={selectedTimeResult}
+                setHasSubmitted={setHasSubmitted}
+                style={{'marginTop':'0em','alignItems':'center','justifyContent':'center','display':'flex','width':'100%'}}
+              />
+            </div>
+            <div style={{'height': '2em','width':'100%'}}>
+                <About style={{'display':'inline','height': '2em','fontSize':'.75em'}}></About>
               </div>
-            </GridItem>
-            <GridItem colSpan={3} rowSpan={1}>
-              {makeGraphToggle()}
-             <div className={'toggleButtonLabel'}>Uncertainty</div>
-            </GridItem>
-            <GridItem colSpan={1} rowSpan={1}>
-              {hasSubmitted? makeGraph('var1'): <></>}
-            </GridItem>
-            <GridItem colSpan={1} rowSpan={1}>
-              {hasSubmitted? makeGraph('var2'): <></>}
-            </GridItem>
-            <GridItem colSpan={1} rowSpan={1}>
-              {hasSubmitted? makeGraph('var3'): <></>}
-            </GridItem>
-            
-          </Grid>
-      
-        </GridItem>
-        <GridItem className={'edge'} colSpan={1} rowSpan={4}></GridItem>
-        <GridItem className={'edge'} colSpan={5} rowSpan={1}></GridItem>
-      </Grid>
-    </div>
+          </div>
+          </GridItem>
+          <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={1}>
+              {hasSubmitted? <TimeToEvent
+                data={data} 
+                setData={setData} 
+                results={results} 
+                getDisplayName={getDisplayName} 
+                selectedTime={selectedTime}
+                setSelectedTime={setSelectedTime}
+                selectedTimeResult={selectedTimeResult}
+                style={{'marginTop':'0em','alignItems':'top','justifyContent':'center','display':'flex','width':'100%'}}
+              /> : <></>}
+          </GridItem>
+          <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={1} style={{'minWidth':'25em'}}>
+            {hasSubmitted? <OutcomeTable inputData={data} data={results} showUncertainty={showUncertainty}/> : <></>}
+          </GridItem>
+          <GridItem className={'shadow fillSpace'} rowSpan={1} colSpan={3}>
+            <Grid
+              templateColumns={'repeat(3,1fr)'}
+              templateRows={'1.1em 1.5em 1fr'}
+              className={'fillSpace'}
+              gap={2}
+            >
+              <GridItem colSpan={3} rowSpan={1}>
+                <div className={'title'} style={{'display':"inline",'justifyContent':'center'}}>
+                  Partial Effects on ORN-Free Survival
+                </div>
+              </GridItem>
+              <GridItem colSpan={3} rowSpan={1}>
+                {makeGraphToggle()}
+              <div className={'toggleButtonLabel'}>Uncertainty</div>
+              </GridItem>
+              <GridItem colSpan={1} rowSpan={1}>
+                {hasSubmitted? makeGraph('var1'): <></>}
+              </GridItem>
+              <GridItem colSpan={1} rowSpan={1}>
+                {hasSubmitted? makeGraph('var2'): <></>}
+              </GridItem>
+              <GridItem colSpan={1} rowSpan={1}>
+                {hasSubmitted? makeGraph('var3'): <></>}
+              </GridItem>
+              
+            </Grid>
+        
+          </GridItem>
+          <GridItem className={'edge'} colSpan={1} rowSpan={4}></GridItem>
+          <GridItem className={'edge'} colSpan={5} rowSpan={1}></GridItem>
+        </Grid>
+      </div>
+      </MathJaxContext>
+    
     </ChakraProvider>
   
     

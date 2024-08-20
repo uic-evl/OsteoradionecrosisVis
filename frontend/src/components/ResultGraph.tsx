@@ -173,7 +173,7 @@ export default function ResultGraph(props: any){
         let legendYCurr: number = yScale(1);
         const lBoxSize: number = Math.min(legendSpacing/2,30, (height - margin.y[1] - margin.y[0] - titleSpacing)/(results.length) - 5);
         const fontSize = Math.min(lBoxSize*.7,18);
-
+        const legendFontSize = width > 345? Math.min(16,fontSize): width > 280? 12: 9;
 
         let legendData: legendItem[] = [];
 
@@ -181,19 +181,49 @@ export default function ResultGraph(props: any){
         for(let ii in plotVals){
             let value = plotVals[ii];
             let color = results[ii].color;
-            const entry: legendItem = {
-                'x': legendX,
-                'y': legendYCurr,
-                'textX': lBoxSize + 5 + legendX,
-                'textY': legendYCurr + (lBoxSize/2),
-                'color': (parseFloat(ii) === 0)? 'black': color,
-                'isPrimary': results[ii].isPrimary,
-                'text': (parseFloat(ii) === 0)? 'Curr. (' + getLegendName(value,props.varName) + ')' : getLegendName(value,props.varName),
-                'width': lBoxSize,
-                'height': lBoxSize,
+            const isCurr = (parseFloat(ii) === 0);
+            if (isCurr) {
+                const entry1: legendItem = {
+                    'x': legendX,
+                    'y': legendYCurr,
+                    'textX': lBoxSize + 5 + legendX,
+                    'textY': legendYCurr + (lBoxSize/2) - legendFontSize/2,
+                    'color': 'black',
+                    'isPrimary': results[ii].isPrimary,
+                    'text': 'Selected' ,
+                    'width': lBoxSize,
+                    'height': lBoxSize,
+                }
+                const entry2: legendItem = {
+                    'x': legendX,
+                    'y': legendYCurr,
+                    'textX': lBoxSize + 5 + legendX,
+                    'textY': legendYCurr + (lBoxSize/2) + legendFontSize/2,
+                    'color': 'black',
+                    'isPrimary': results[ii].isPrimary,
+                    'text': '(' + getLegendName(value,props.varName) + ')' ,
+                    'width': lBoxSize,
+                    'height': lBoxSize,
+                }
+                legendData.push(entry1);
+                legendData.push(entry2);
+                legendYCurr += 5 + lBoxSize;
+            } else {
+                const entry: legendItem = {
+                    'x': legendX,
+                    'y': legendYCurr,
+                    'textX': lBoxSize + 5 + legendX,
+                    'textY': legendYCurr + (lBoxSize/2),
+                    'color': color,
+                    'isPrimary': results[ii].isPrimary,
+                    'text': getLegendName(value,props.varName),
+                    'width': lBoxSize,
+                    'height': lBoxSize,
+                }
+                legendData.push(entry);
+                legendYCurr += 5 + lBoxSize;
             }
-            legendData.push(entry);
-            legendYCurr += 5 + lBoxSize;
+            
         }
 
         // svg.selectAll('.legend').remove();
@@ -211,7 +241,7 @@ export default function ResultGraph(props: any){
             .attr('stroke-width',2);
         lRects.exit().remove();
         
-        const legendFontSize = width > 345? Math.min(16,fontSize): width > 280? 12: 9;
+        
         let lText = svg.selectAll('text').filter('.legend').data(legendData);
         lText.enter()
             .append('text').attr('class','legend')

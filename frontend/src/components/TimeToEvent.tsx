@@ -79,8 +79,8 @@ export default function TimeToEvent(props: any){
                 <div style={{'display':'flex','flexDirection':'column','alignItems':'center','height':'calc(100% - 2.5em)','width':'100%'}}>
                     <hr style={{'marginBottom':'.5em','marginTop':'1em','width':'100%'}}></hr>
                     {makeSelectTimeThing()}
-                    <div style={{"marginTop":'.5em'}}>{'Mean Survival (Months): '}<div className={'resultText'}>{getCI(survivalTimes)}</div></div>
-                    <div style={{"marginTop":'.5em'}}>{'Median Survival (Months): '}<div className={'resultText'}>{getCI(medianSurvivalTimes)}</div></div>
+                    <div style={{"marginTop":'.5em'}}>{'Mean ORN-Free Survival (M): '}<div className={'resultText'}>{getCI(survivalTimes)}</div></div>
+                    <div style={{"marginTop":'.5em'}}>{'Median ORN-Free Survival (M): '}<div className={'resultText'}>{getCI(medianSurvivalTimes)}</div></div>
                 </div>
             </div>
             

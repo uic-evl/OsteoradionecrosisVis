@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { Button, Modal, ModalOverlay, ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton,useDisclosure} from '@chakra-ui/react';
 import { Progress } from '@chakra-ui/react';
 import model from '../model.png';
+import { MathJax } from 'better-react-mathjax';
 
 const dataText: JSX.Element = (
 <p>
@@ -33,9 +34,26 @@ const modelText: JSX.Element = (
   <a href='https://lifelines.readthedocs.io/en/latest/fitters/regression/WeibullAFTFitter.html' target="_blank" style={{'color':"blue"}}> (Described Here) </a>
   <br></br>
   The final model for ORN-Free survival is given by:
-  <div style={{'width':'100%','height':'500px','justifyContent':'center','display':'flex'}}>
-    <img style={{'width':'500px','height':'100%','objectFit':'contain'}} src={model}/>
+  <div style={{'justifyContent':'center','display':'flex','flexDirection':'column'}}>
+  <MathJax style={{textAlign:'center'}}>
+    {"\\( S(x,t) = e^{\\frac{-t}{\\lambda(x)}^{e^{\\rho_{0}} }} \\)"}
+  </MathJax>
+  <div style={{textAlign:'center'}}>Where</div>
+  <MathJax style={{textAlign:'center'}}>
+    {"\\( \\lambda(x) = \\beta_{1}\\cdot D25 + \\beta_{2}\\cdot Gender + \\beta_{3}\\cdot Gender + \\beta_{0} \\)"}
+  </MathJax>
+  
+  <MathJax style={{textAlign:'center'}}>
+    {"\\( \\beta_{1} = -.12, \\ \\beta_{2} = -.48, \\beta_{3} = -.31 \\)"}
+  </MathJax>
+  <MathJax style={{textAlign:'center'}}>
+    {"\\( \\beta_{0} = 13.69, \\rho_{0} = -.21 \\)"}
+  </MathJax>
   </div>
+  
+  {/* <div style={{'width':'100%','height':'500px','justifyContent':'center','display':'flex'}}>
+    <img style={{'width':'500px','height':'100%','objectFit':'contain'}} src={model}/>
+  </div> */}
   Where t is time given in months, 
   D25 is the dose in greys that 25% of the mandible recieves, 
   Dental is 1 if the patient received a dental extraction (otherwise 0), 
