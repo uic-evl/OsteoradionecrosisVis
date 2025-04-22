@@ -82,7 +82,6 @@ export default function About(props){
   ]
 
   const [stage,setStage] = useState<number>(0);
-  const [paperInfoDialogOpen, setPaperInfoDialogOpen] = useState<boolean>(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const incrementStage = (direction)=>{
@@ -123,7 +122,7 @@ export default function About(props){
             <Button onClick={() => incrementStage(1)} variant='outline'>Next</Button>
           </ModalFooter> */}
           <ModalFooter>
-            <Button colorScheme='gray' mr={3} onClick={() => setPaperInfoDialogOpen(false)}>
+            <Button colorScheme='gray' mr={3} onClick={onClose}>
               Close
             </Button>
           </ModalFooter>
