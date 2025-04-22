@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import { Button, Modal, ModalOverlay, ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton,useDisclosure} from '@chakra-ui/react';
+import { Button, Modal, ModalOverlay, ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton,useDisclosure, Icon, } from '@chakra-ui/react';
 import { Progress } from '@chakra-ui/react';
+import { AiFillQuestionCircle } from "react-icons/ai";
 import model from '../model.png';
 import { MathJax } from 'better-react-mathjax';
 
@@ -60,6 +61,14 @@ const modelText: JSX.Element = (
   and Gender is 1 if the patient is male (otherwise 0)
 </p>
 )
+
+const paperInfoText: JSX.Element = (
+  <p>
+    Data were retrospectively obtained for a clinical observational cohort of 1129 patients (198 ORNJ cases) with HNC treated with radiotherapy (RT) at The University of Texas MD Anderson Cancer Center.
+    Details can be found in <a style={{ color: 'blue'}} href='https://www.sciencedirect.com/science/article/pii/S0167814025001859?dgcid=coauthor'>[link_to_paper]</a>
+  </p>
+  )
+
 export default function About(props){
 
   const images: string[] = ['','']
@@ -73,6 +82,7 @@ export default function About(props){
   ]
 
   const [stage,setStage] = useState<number>(0);
+  const [paperInfoDialogOpen, setPaperInfoDialogOpen] = useState<boolean>(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const incrementStage = (direction)=>{
@@ -96,6 +106,9 @@ export default function About(props){
   return (
     <div  style={style} className={"tutorial"} onKeyUp={handleKeyPress}>
       <Button onClick={onOpen} className={'modalButton'}>About</Button>
+      <Icon>
+          <AiFillQuestionCircle onClick={() => setPaperInfoDialogOpen(true)} style={{ cursor: 'pointer', fontSize: '2em' }} />
+      </Icon>
       <Modal isOpen={isOpen}  onClose={onClose}>
         <ModalOverlay />
         <ModalContent height="fit-content" minW="min(80vw, 80em)" maxH="90%" >
@@ -112,6 +125,21 @@ export default function About(props){
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <Modal isOpen={paperInfoDialogOpen} onClose={() => setPaperInfoDialogOpen(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Data</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              {paperInfoText}
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme='gray' mr={3} onClick={() => setPaperInfoDialogOpen(false)}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
     </div>
   )
 }
