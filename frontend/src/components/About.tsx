@@ -109,7 +109,8 @@ export default function About(props){
       <Modal isOpen={isOpen}  onClose={onClose}>
         <ModalOverlay />
         <ModalContent height="fit-content" minW="min(80vw, 80em)" maxH="90%" >
-        <ModalHeader className={'centerText'}>{titles[stage]}</ModalHeader>
+        {/* <ModalHeader className={'centerText'}>{titles[stage]}</ModalHeader> */}
+        <ModalHeader className={'centerText'}>About</ModalHeader>
           <ModalCloseButton />
           <ModalBody style={{'margin':'2em'}}>
             {paperInfoText}
