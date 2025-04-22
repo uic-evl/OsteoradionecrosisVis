@@ -64,8 +64,7 @@ const modelText: JSX.Element = (
 
 const paperInfoText: JSX.Element = (
   <p>
-    Data were retrospectively obtained for a clinical observational cohort of 1129 patients (198 ORNJ cases) with HNC treated with radiotherapy (RT) at The University of Texas MD Anderson Cancer Center.
-    Details can be found in <a style={{ color: 'blue'}} href='https://www.sciencedirect.com/science/article/pii/S0167814025001859?dgcid=coauthor'>[link_to_paper]</a>
+    This online predictor software has been developed by researchers at The University of Illinois Chicago in collaboration with the The University of Texas MD Anderson Cancer Center, under National Institutes of Health Award NCI R01CA258827. A detailed description of the model and data  can be found in this paper: L. Humbert-Vidan et al., "Externally validated digital decision support tool for time-to-osteoradionecrosis risk-stratification using right-censored multi-institutional observational cohorts", Rad. Onc. Vol 207, 2025 <a href='https://authors.elsevier.com/c/1kyP3cA0-MJk3' style={{color: 'blue'}}>[link_to_paper]</a>.
   </p>
   )
 
@@ -77,8 +76,9 @@ export default function About(props){
   ]
 
   const texts: JSX.Element[] = [
-    modelText,
-    dataText,
+    // modelText,
+    // dataText,
+    paperInfoText
   ]
 
   const [stage,setStage] = useState<number>(0);
@@ -106,40 +106,28 @@ export default function About(props){
   return (
     <div  style={style} className={"tutorial"} onKeyUp={handleKeyPress}>
       <Button onClick={onOpen} className={'modalButton'}>About</Button>
-      <Icon>
-          <AiFillQuestionCircle onClick={() => setPaperInfoDialogOpen(true)} style={{ cursor: 'pointer', fontSize: '2em' }} />
-      </Icon>
       <Modal isOpen={isOpen}  onClose={onClose}>
         <ModalOverlay />
         <ModalContent height="fit-content" minW="min(80vw, 80em)" maxH="90%" >
         <ModalHeader className={'centerText'}>{titles[stage]}</ModalHeader>
           <ModalCloseButton />
           <ModalBody style={{'margin':'2em'}}>
-            {texts[stage]}
-            {images[stage] !== ''? <img style={{'objectFit':'contain','width':'500px','height':'500px'}} src={images[stage]}/>: <></>}
+            {paperInfoText}
+            {/* {texts[stage]}
+            {images[stage] !== ''? <img style={{'objectFit':'contain','width':'500px','height':'500px'}} src={images[stage]}/>: <></>} */}
           </ModalBody>
-          <Progress style={{'width':'90%','left':'5%'}} value={100*(stage+.01)/(images.length-.99)}/>
-          <ModalFooter display={'flex'} justifyContent={'space-between'}>
+          {/* <Progress style={{'width':'90%','left':'5%'}} value={100*(stage+.01)/(images.length-.99)}/> */}
+          {/* <ModalFooter display={'flex'} justifyContent={'space-between'}>
             <Button onClick={() => incrementStage(-1)} variant='outline'>Previous</Button>
             <Button onClick={() => incrementStage(1)} variant='outline'>Next</Button>
+          </ModalFooter> */}
+          <ModalFooter>
+            <Button colorScheme='gray' mr={3} onClick={() => setPaperInfoDialogOpen(false)}>
+              Close
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Modal isOpen={paperInfoDialogOpen} onClose={() => setPaperInfoDialogOpen(false)}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Data</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              {paperInfoText}
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme='gray' mr={3} onClick={() => setPaperInfoDialogOpen(false)}>
-                Close
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
     </div>
   )
 }
